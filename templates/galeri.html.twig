@@ -1,0 +1,42 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ halaman }}{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('assets/user/style.css') }}">
+{% endblock %}
+
+{% block header %}
+<h4 class="text-light">
+    <a href="{{ path('home') }}"> Home </a> <span> / {{ halaman }}
+</h4>
+{% endblock %}
+
+{% block body %}
+{# begin:: body #}
+<main id="main">
+    <section id="gallery" class="gallery">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-md-7">
+                    <div class="row mb-5">
+                        <div class="col-12 ">
+                            <h2 class="site-section-heading text-center">{{ halaman }}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="lightgallery">
+                {% for rows in data %}
+                <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2 item" data-aos="fade" data-src="{{ asset('uploads/informasi/'~rows.gambar) }}" data-sub-html="<h3>Gereja Toraja Mamasa Jemaat</h3><p>Gereja Toraja Mamasa Jemaat Tamalanrea kegiatan perlombaan</p>">
+                    <img src="{{ asset('uploads/informasi/'~rows.gambar) }}" alt="Galery" class="img-fluid" />
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</main>
+{# end:: body #}
+{% endblock %}
+
+{% block javascripts %}{% endblock %}

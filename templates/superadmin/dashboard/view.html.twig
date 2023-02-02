@@ -1,0 +1,31 @@
+{% extends 'superadmin/layout.html.twig' %}
+
+{% block title %}{{ halaman }}{% endblock %}
+
+{% block body %}
+{# begin:: head #}
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-7 align-self-center">
+            <h2 class="page-title text-truncate text-dark font-weight-medium mb-1">{{ halaman }}</h2>
+        </div>
+    </div>
+</div>
+{# end:: head #}
+
+{# begin:: body #}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <p>Selamat datang <strong>{{ app.user.nama }}</strong>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{# end:: body #}
+{% endblock %}
+
+{% block javascripts %}{% endblock %}

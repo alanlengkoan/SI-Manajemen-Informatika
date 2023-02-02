@@ -1,0 +1,38 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ halaman }}{% endblock %}
+
+{% block header %}
+<h4 class="text-light">
+    <a href="{{ path('home') }}"> Home </a> <span> / {{ halaman }}
+</h4>
+{% endblock %}
+
+{% block body %}
+{# begin:: body #}
+<main id="main">
+    <section id="about" class="about">
+        <div class="container">
+            <div class="row">
+                {% for rows in gereja %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="post-entry-1 h-100">
+                            <a href="/gereja/{{ rows.id_gereja }}">
+                                {% set fotoAkun = 'uploads/akun/'~rows.foto %}
+                                <img src="{{ (rows.foto != null) ? asset(fotoAkun) : "//placehold.it/150" }}" class="img-fluid" alt="Profil" />
+                            </a>
+                            <div class="post-entry-1-contents">
+                                <h2><a href="/gereja/{{ rows.id_gereja }}">{{ rows.nama }}</a></h2>
+                                <p>{{ rows.tentang[:100]|raw }} <a href="/gereja/{{ rows.id_gereja }}">Selengkapnya . . .</a> </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</main>
+{# end:: body #}
+{% endblock %}
+
+{% block javascripts %}{% endblock %}

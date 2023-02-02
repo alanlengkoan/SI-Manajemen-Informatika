@@ -1,0 +1,325 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ halaman }}{% endblock %}
+
+{% block stylesheets %}
+<link href="{{ asset('assets/admin/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css') }}" rel="stylesheet"/>
+{% endblock %}
+
+{% block body %}
+{# begin:: head #}
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-7 align-self-center">
+            <h2 class="page-title text-truncate text-dark font-weight-medium mb-1">{{ halaman }}</h2>
+        </div>
+    </div>
+</div>
+{# end:: head #}
+
+{# begin:: body #}
+<div class="container-fluid">
+    {# begin:: form #}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Form</h3>
+                    <hr>
+                    <form action="/admin/pemasukan/add" id="form-add" method="post" enctype="multipart/form-data">
+                        {# begin:: token and id #}
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('add') }}">
+                        <input type="hidden" id="inpidkeuanganrincian">
+                        {# end:: token and id #}
+
+                        <div class="form-group">
+                            <h4 class="card-title">Keuangan *</h4>
+                            <select style="width: 100%" class="form-control form-control-sm" name="inpidkeuangan" id="inpidkeuangan">
+                                <option value="">- Pilih Keuangan -</option>
+                                {% for rows in keuangan %}
+                                <option value="{{ rows.id_keuangan }}">{{ rows.nama }}</option>
+                                {% endfor %}
+                            </select>
+                            <div id="error"></div>
+                        </div>
+                        <div class="form-group">                            
+                            <h4 class="card-title">Masuk (Debit) *</h4>
+                            <input type="text" class="form-control form-control-sm" name="inpdebit" id="inpdebit" placeholder="Masukkan Uang Masuk" />
+                            <div id="error"></div>
+                        </div>
+                        <div class="form-group">
+                            <h4 class="card-title">Gambar</h4>
+                            <div id="lihat_gambar" style="padding-bottom: 10px"></div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend" style="height: 35px;">
+                                    <span class="input-group-text">Gambar</span>
+                                </div>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" name="inpgambar" id="inpgambar" />
+                                    <label class="custom-file-label form-control-sm">Choose file</label>
+                                </div>
+                            </div>
+                            <div id="centang_gambar"></div>
+                            <div id="error"></div>
+                        </div>
+                        <div class="form-group">                            
+                            <h4 class="card-title">Keterangan *</h4>
+                            <textarea class="form-control form-control-sm" name="inpketerangan" id="inpketerangan" rows="2" placeholder="Masukkan Keterangan"></textarea>
+                            <div id="error"></div>
+                        </div>
+                        <div class="form-group">                            
+                            <h4 class="card-title">Tanggal Masuk *</h4>
+                            <input type="date" class="form-control form-control-sm" name="inptanggal" id="inptanggal" />
+                            <div id="error"></div>
+                        </div>
+                        <button type="submit" id="add" class="btn btn-outline-primary btn-sm btn-rounded">
+                            <i class="fas fa-plus"></i>&nbsp;Tambah
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# end:: form #}
+    {# begin:: tabel #}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Tabel</h3>
+                    <hr>
+                    <div class="table-responsive">
+                        <table id="tabel-pemasukan" class="table table-striped table-bordered display no-wrap" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Aksi</th>
+                                    <th>Keuangan</th>
+                                    <th>Masuk (Debit)</th>
+                                    <th>Gambar</th>
+                                    <th>Tanggal</th>
+                                    <th>Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rows in data %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                     <td>
+                                        <button class="btn btn-outline-danger btn-sm btn-rounded" id="upd" data-id="{{ rows.id_keuangan_rincian }}">
+                                            <i class="fas fa-edit"></i>&nbsp;Ubah
+                                        </button>
+                                        <button class="btn btn-outline-primary btn-sm btn-rounded" id="del" data-id="{{ rows.id_keuangan_rincian }}">
+                                            <i class="fas fa-trash"></i>&nbsp;Hapus
+                                        </button>
+                                    </td>
+                                    <td>{{ rows.nama_keuangan }}</td>
+                                    <td>{{ rows.debit|format_rp }}</td>
+                                    <td>
+                                        {% set fotoGambar = 'uploads/keuangan/'~rows.gambar %}
+                                        <img src="{{ (rows.gambar != null) ? asset(fotoGambar) : "//placehold.it/150" }}" class="mx-auto img-fluid d-block" width="100" height="100" />
+                                    </td>
+                                    <td>{{ rows.tanggal|date('d-m-Y') }}</td>
+                                    <td>{{ rows.keterangan }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# end:: tabel #}
+</div>
+{# end:: body #}
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('assets/admin/extra-libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/admin/dist/js/pages/datatable/datatable-basic.init.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+
+<script>
+    // untuk datatable
+    var untukDataTabel = function() {
+        $('#tabel-pemasukan').DataTable();
+    }();
+
+    // untuk tambah data
+    var untukTambahData = function() {
+        $('#form-add').submit(function(e) {
+            e.preventDefault();
+
+            $('#inpidkeuangan').attr('required', 'required');
+            $('#inpdebit').attr('required', 'required');
+            $('#inpketerangan').attr('required', 'required');
+            $('#inptglibadah').attr('required', 'required');
+
+            if ($('#form-add').parsley().isValid() == true) {
+                $.ajax({
+                    method: $(this).attr('method'),
+                    url: $(this).attr('action'),
+                    data: new FormData(this),
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    beforeSend: function() {
+                        $('#add').attr('disabled', 'disabled');
+                        $('#add').html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                    },
+                    success: function(response) {
+                        swal({
+                            title: response.title,
+                            text: response.text,
+                            icon: response.type,
+                            button: response.button,
+                        })
+                        .then((value) => {
+                            location.reload();
+                        });
+                    }
+                })
+            }
+        });
+    }();
+
+    // untuk get id
+    var untukGetIdData = function() {
+        $(document).on('click', '#upd', function() {
+            var ini = $(this);
+
+            $.ajax({
+                type: "post",
+                url: "pemasukan/get",
+                dataType: 'json',
+                data: {
+                    id: ini.data('id')
+                },
+                beforeSend: function() {
+                    ini.attr('disabled', 'disabled');
+                    ini.html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                },
+                success: function(data) {
+                    $('form').attr('action', '/admin/pemasukan/upd');
+                    $('form').attr('id', 'form-upd');
+
+                    var lokasi_gambar = "{{ asset('uploads/keuangan/') }}"+data.gambar;
+                    $('#lihat_gambar').html(`<img src="`+(data.gambar != null ? lokasi_gambar : '//placehold.it/150')+`" width="100" heigth="100" />`);
+                    $('#centang_gambar').html(`<input type="checkbox" name="ubah_gambar" id="ubah_gambar" /> Ubah gambar!`);
+
+                    $('#inpidkeuanganrincian').attr('name', 'inpidkeuanganrincian');
+                    $('#inpidkeuanganrincian').attr('value', data.id_keuangan_rincian);
+                    $('#inpidkeuangan').val(data.id_keuangan);
+                    $('#inpdebit').val(data.debit);
+                    $('#inpgambar').attr('disabled', 'disabled');
+                    $('#inpgambar').removeAttr('id');
+                    $('#inpketerangan').val(data.keterangan);
+                    $('#inptanggal').val(data.tanggal);
+                    $('#add').html('<i class="fas fa-save"></i>&nbsp;Simpan');
+                    ini.removeAttr('disabled');
+                    ini.html('<i class="fas fa-edit"></i>&nbsp;Ubah');
+                }
+            });
+        });
+    }();
+
+    // untuk ubah gambar
+    var untukUbahGambar = function(){
+        $(document).on('click', '#ubah_gambar', function () {
+            var ini = $(this);
+            if (ini.is(':checked')) {
+                $("input[name*='inpgambar']").removeAttr('disabled');
+                $("input[name*='inpgambar']").attr('id', 'inpgambar');
+            } else {
+                $("input[name*='inpgambar']").attr('disabled', 'disabled');
+                $("input[name*='inpgambar']").removeAttr('id');
+                $("input[name*='inpgambar']").removeAttr('required');
+                ini.parent().parent().find('#error').empty();
+            }
+        });
+    }();
+
+     // untuk ubah data
+    var untukUbahData = function() {
+        $(document).on('submit', '#form-upd', function (e) {
+            e.preventDefault();
+
+            $('#inpidkeuangan').attr('required', 'required');
+            $('#inpdebit').attr('required', 'required');
+            $('#inpketerangan').attr('required', 'required');
+            $('#inptglibadah').attr('required', 'required');
+
+            if ($('#form-upd').parsley().isValid() == true) {
+                $.ajax({
+                    method: $(this).attr('method'),
+                    url: $(this).attr('action'),
+                    data: new FormData(this),
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $('#add').attr('disabled', 'disabled');
+                        $('#add').html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                    },
+                    success: function (response) {
+                        swal({
+                            title: response.title,
+                            text: response.text,
+                            icon: response.type,
+                            button: response.button,
+                        })
+                        .then((value) => {
+                            location.reload();
+                        });
+                    }
+                })
+            }
+        });
+    }();
+
+    // untuk hapus data
+    var untukHapusData = function() {
+        $(document).on('click', '#del', function() {
+            var ini = $(this);
+
+            swal({
+                title: "Apakah Anda yakin ingin menghapusnya?",
+                text: "Data yang telah dihapus tidak dapat dikembalikan!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((del) => {
+                if (del) {
+                    $.ajax({
+                        type: "post",
+                        url: "pemasukan/del",
+                        dataType: 'json',
+                        data: {
+                            id: ini.data('id')
+                        },
+                        beforeSend: function () {
+                            ini.attr('disabled', 'disabled');
+                            ini.html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                        },
+                        success: function (response) {
+                            swal({
+                                title: response.title,
+                                text: response.text,
+                                icon: response.type,
+                                button: response.button,
+                            })
+                            .then((value) => {
+                                location.reload();
+                            });
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
+        });
+    }();
+</script>
+{% endblock %}

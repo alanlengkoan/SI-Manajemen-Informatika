@@ -1,0 +1,57 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ halaman }}{% endblock %}
+
+{% block body %}
+{# begin:: body #}
+<main id="main">
+    {# begin:: gereja #}
+    <section id="events" class="events">
+        <div class="container">
+            <div class="section-title">
+                <h2> Daftar Gereja Toraja Mamasa <span>Klasis Makassar</span> </h2>
+            </div>
+            <div class="owl-carousel events-carousel">
+                {% for rows in gereja %}
+                    <div class="row event-item">
+                        <div class="col-lg-6">
+                            {% set fotoAkun = 'uploads/akun/'~rows.foto %}
+                            <img src="{{ (rows.foto != null) ? asset(fotoAkun) : "https://www.gambarunik.id/wp-content/uploads/2019/06/Berbagai-Gambar-Foto-Profil-Kosong-Lucu-Untuk-Status.jpg" }}" class="img-fluid" alt="Profil" />
+                        </div>
+                        <div class="col-lg-6 pt-4 pt-lg-0 content">
+                            <h2>{{ rows.nama }}</h2>
+                            <p>{{ rows.tentang[:700]|raw }} <a href="/gereja/{{ rows.id_gereja }}" type="button">Selengkapnya . . .</a></p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {# end:: gereja #}
+
+    {# begin:: galery #}
+    <section id="gallery" class="gallery mb-5">
+        <div class="container">
+            <div class="section-title">
+                <h1> Galery </h1>
+            </div>
+            <div class="row no-gutters">
+                {% for rows in galeri %}
+                <div class="col-lg-3 col-md-4">
+                    <div class="gallery-item">
+                        <a href="{{ asset('uploads/informasi/'~rows.gambar) }}" class="venobox"
+                            data-gall="gallery-item">
+                            <img src="{{ asset('uploads/informasi/'~rows.gambar) }}" alt="Galery" class="img-fluid" />
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {# end:: galery #}
+</main>
+{# end:: body #}
+{% endblock %}
+
+{% block javascripts %}{% endblock %}

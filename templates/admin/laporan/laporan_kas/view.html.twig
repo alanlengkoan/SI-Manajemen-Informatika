@@ -1,0 +1,97 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ halaman }}{% endblock %}
+
+{% block body %}
+{# begin:: head #}
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-7 align-self-center">
+            <h2 class="page-title text-truncate text-dark font-weight-medium mb-1">{{ halaman }}</h2>
+        </div>
+    </div>
+</div>
+{# end:: head #}
+
+{# begin:: body #}
+<div class="container-fluid">
+    {# begin:: form #}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Form</h3>
+                    <hr>
+                    <form action="/admin/laporan_keuangan" id="form-add" method="post">
+                        <div class="form-group">                            
+                            <h4 class="card-title">Dari *</h4>
+                            <input type="date" class="form-control form-control-sm" name="inpbegin" id="inpbegin" />
+                            <div id="error"></div>
+                        </div>
+                        <div class="form-group">                            
+                            <h4 class="card-title">Sampai *</h4>
+                            <input type="date" class="form-control form-control-sm" name="inpend" id="inpend" />
+                            <div id="error"></div>
+                        </div>
+                        <button type="submit" id="show" class="btn btn-outline-primary btn-sm btn-rounded">
+                            <i class="fas fa-eye"></i>&nbsp;Lihat
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# end:: form #}
+
+    {# begin:: tabel #}
+    <div id="lihat-tabel"></div>
+    {# end:: tabel #}
+</div>
+{# end:: body #}
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+
+<script>
+    // untuk lihat data
+    var untukTambahData = function() {
+        var parsleyConfig = {
+            errorsContainer: function(parsleyField) {
+                var $err = parsleyField.$element.siblings('#error');
+                return $err;
+            }
+        }
+
+        $('#form-add').parsley(parsleyConfig);
+
+        $('#form-add').submit(function(e) {
+            e.preventDefault();
+
+            $('#inpbegin').attr('required', 'required');
+            $('#inpend').attr('required', 'required');
+
+            if ($('#form-add').parsley().isValid() == true) {
+                $.ajax({
+                    method: $(this).attr('method'),
+                    url: $(this).attr('action'),
+                    data: new FormData(this),
+                    contentType: false,
+                    processData: false,
+                    dataType: 'html',
+                    beforeSend: function() {
+                        $('#show').attr('disabled', 'disabled');
+                        $('#show').html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                    },
+                    success: function(data) {
+                        $('#lihat-tabel').html(data);
+
+                        $('#show').removeAttr('disabled');
+                        $('#show').html('<i class="fas fa-eye"></i>&nbsp;Lihat');
+                    }
+                })
+            }
+        });
+    }();
+</script>
+{% endblock %}

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .column {
+            float: left;
+            width: 33.33%;
+            padding: 10px;
+            height: 750px;
+        }
+
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="row">
+        <div class="column" style="text-align: center;">
+            <table align="center">
+                <tr>
+                    <td>
+                        <img src="{{ app.request.uriForPath('/uploads/akun/'~detail.foto) }}" width="50" heigth="50" />
+                    </td>
+                    <td align="center">
+                        <h3 style="margin: 0;">Gereja Toraja Mamasa</h3>
+                        <p style="font-size: 13px; margin: 0;">(Anggota Persekutuan Gereja-Gereja di Indonesia)</p>
+                        <h5 style="margin: 0;">{{ detail.nama }}</h5>
+                        <i style="font-size: 13px;">{{ detail.alamat }}</i>
+                    </td>
+                </tr>
+            </table>
+            <h2>Warta Jemaat</h2>
+            <h2>{{ tanggal|date('d-m-Y') }}</h2>
+            <img style="margin-top: 40px; margin-bottom: 10px;" src="https://bengkuluekspress.com/wp-content/uploads/2018/12/gereja.jpg" width="400" height="400">
+            <table align="center">
+                <tr>
+                    <td align="center">
+                        <p>
+                            Majelis Jemaat mengucapkan : SELAMAT DATANG kepada seluruh Jemaat Tuhan yang menghadiri ibadah Minggu hari ini, khususnya bagi saudara-saudara yang baru mengikuti ibadah ditempat ini Kiranya pelayanan Firman membawa Berkat Baru, dalam kehidupan kita bersama.
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="column" style="text-align: center;">
+            <h2>Ibadah Minggu</h2>
+            <table border="1" align="center" style="width: 100%">
+                <tr>
+                    <td>Jam</td>
+                    <td>Pelayan</td>
+                </tr>
+                {% if jadwal_ibadah_minggu|length != 0 %}
+                    {% for rows in jadwal_ibadah_minggu %}
+                    <tr>
+                        <td width="100">{{ rows.tanggal_ibadah|date('d-m-Y') }}</td>
+                        <td>{{ rows.nama_pelayan }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="2">Belum ada!</td>
+                    </tr>
+                {% endif %}
+            </table>
+            {% for key, value in jadwal_ibadah_harian %}
+            <h2>Jadwal Ibadah {{ key }}</h2>
+            <table border="1" align="center" style="width: 100%">
+                <tr>
+                    <td>Tanggal</td>
+                    <td>Jam</td>
+                    <td>Nama Keluarga</td>
+                    <td>Pelayan</td>
+                </tr>
+                {% if value|length != 0 %}
+                    {% for rows in value %}
+                    <tr>
+                        <td>{{ rows.tanggal_ibadah|date('d-m-Y') }}</td>
+                        <td>{{ rows.tanggal_ibadah|date('H:s') }}</td>
+                        <td>{{ rows.nama_keluarga }}</td>
+                        <td>{{ rows.nama_pelayan }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="4">Belum ada!</td>
+                    </tr>
+                {% endif %}
+            </table>
+            {% endfor %}
+            <h2>Ulang Tahun</h2>
+            <table border="1" align="center" style="width: 100%">
+                <tr>
+                    <td>Tanggal</td>
+                    <td>Nama</td>
+                    <td>Umur</td>
+                </tr>
+                {% if ulang_tahun|length != 0 %}
+                    {% for rows in ulang_tahun %}
+                    <tr>
+                        <td>{{ rows.tgl_lahir|date('d-m-Y') }}</td>
+                        <td>{{ rows.nama }}</td>
+                        <td>{{ rows.tgl_lahir|date('Y-m-d')|umur }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3">Belum ada!</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+        <div class="column" style="">
+            <h2 style="text-align: center;">Laporan Keuangan</h2>
+            <h3>Penerimaan</h3>
+            <table border="1">
+                <tr>
+                    <td>No.</td>
+                    <td>Keterangan</td>
+                    <td>Tanggal</td>
+                    <td>Jumlah</td>
+                </tr>
+                {% if keuangan_pemasukan|length != 0 %}
+                    {% set total = 0 %}
+                    {% for rows in keuangan_pemasukan %}
+                    {% set total = total + rows.debit %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ rows.keterangan }}</td>
+                        <td>{{ rows.tanggal|date('d-m-Y') }}</td>
+                        <td width="100">Rp. {{ rows.debit|format_rp }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="3" align="center">Total</td>
+                        <td>Rp. {{ total|format_rp }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">Belum ada!</td>
+                    </tr>
+                {% endif %}
+            </table>
+            <h3>Pengeluaran</h3>
+            <table border="1">
+                <tr>
+                    <td>No.</td>
+                    <td>Keterangan</td>
+                    <td>Tanggal</td>
+                    <td>Jumlah</td>
+                </tr>
+                {% if keuangan_pengeluaran|length != 0 %}
+                    {% set total = 0 %}
+                    {% for rows in keuangan_pengeluaran %}
+                    {% set total = total + rows.kredit %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ rows.keterangan }}</td>
+                        <td>{{ rows.tanggal|date('d-m-Y') }}</td>
+                        <td width="100">Rp. {{ rows.kredit|format_rp }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="3" align="center">Total</td>
+                        <td>Rp. {{ total|format_rp }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">Belum ada!</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+
+</body>
+
+</html>

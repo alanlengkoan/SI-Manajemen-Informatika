@@ -1,0 +1,31 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ halaman }}{% endblock %}
+
+{% block stylesheets %}{% endblock %}
+
+{% block header %}
+<h4 class="text-light">
+    <a href="{{ path('home') }}"> Home </a> <span> / {{ halaman }}
+</h4>
+{% endblock %}
+
+{% block body %}
+{# begin:: body #}
+<main id="main">
+    <section id="about" class="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 ftco-animate">
+                    <h2 class="mb-3">{{ berita.judul }}</h2>
+                    <p><img src="{{ asset('uploads/informasi/'~berita.gambar) }}" alt="Images" class="img-fluid"></p>
+                    {{ berita.isi|raw }}
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{# end:: body #}
+{% endblock %}
+
+{% block javascripts %}{% endblock %}

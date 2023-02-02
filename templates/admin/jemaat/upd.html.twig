@@ -1,0 +1,49 @@
+<form action="/admin/jemaat/upd" id="form-upd" method="post">
+    {# begin:: token and id #}
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('upd') }}">
+    <input type="hidden" name="inpidjemaat" id="inpidjemaat" value={{ id_jemaat }}>
+    {# end:: token and id #}
+
+    <div class="form-group">
+        <h4 class="card-title">NIK *</h4>
+        <input type="text" class="form-control form-control-sm" name="inpnik" id="inpnik" value="{{ nik }}" />
+    </div>
+    <div class="form-group">
+        <h4 class="card-title">Nama Lengkap *</h4>
+        <input type="text" class="form-control form-control-sm" name="inpnama" id="inpnama" value="{{ nama }}" />
+    </div>
+    <div class="form-group">
+        <h4 class="card-title">Tempat Lahir *</h4>
+        <input type="text" class="form-control form-control-sm" name="inptmp_lhr" id="inptmp_lhr" value="{{ tmp_lahir }}" />
+    </div>
+    <div class="form-group">
+        <h4 class="card-title">Tanggal Lahir *</h4>
+        <input type="date" class="form-control form-control-sm" name="inptgl_lhr" id="inptgl_lhr" value="{{ tgl_lahir }}" />
+    </div>
+    <div class="form-group">
+        <h4 class="card-title">Jenis Kelamin *</h4>
+        <select style="width: 100%" class="form-control form-control-sm" name="inpjen_kel" id="inpjen_kel">
+            <option value="">Pilih Jenis Kelamin</option>
+            <option value="L" {{ (jen_kel == 'L') ? 'selected' : '' }}>Laki - laki</option>
+            <option value="P" {{ (jen_kel == 'P') ? 'selected' : '' }}>Perempuan</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <h4 class="card-title">Pekerjaan *</h4>
+        <input type="text" class="form-control form-control-sm" name="inppekerjaan" id="inppekerjaan" value="{{ pekerjaan }}" />
+    </div>
+    <div class="form-group">
+        <h4 class="card-title">No. Telepon *</h4>
+        <input type="text" class="form-control form-control-sm" name="inpno_telpon" id="inpno_telpon" value="{{ no_telpon }}" />
+    </div>
+    <div class="form-group">
+        <h4 class="card-title">Alamat *</h4>
+        <textarea class="form-control form-control-sm" name="inpalamat" id="inpalamat">{{ alamat }}</textarea>
+    </div>
+    <button type="submit" id="add" class="btn btn-outline-primary btn-sm btn-rounded">
+        <i class="fas fa-plus"></i>&nbsp;Tambah
+    </button>
+    <button type="button" class="btn btn-outline-danger btn-sm btn-rounded" data-dismiss="modal" aria-label="Close">
+        <i class="fas fa-close"></i>&nbsp;Batal
+    </button>
+</form>

@@ -1,0 +1,331 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ halaman }}{% endblock %}
+
+{% block stylesheets %}
+<link href="{{ asset('assets/admin/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css') }}" rel="stylesheet"/>
+{% endblock %}
+
+{% block body %}
+{# begin:: head #}
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-7 align-self-center">
+            <h2 class="page-title text-truncate text-dark font-weight-medium mb-1">{{ halaman }}</h2>
+        </div>
+    </div>
+</div>
+{# end:: head #}
+
+{# begin:: body #}
+<div class="container-fluid">
+    {# begin:: form #}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Form</h3>
+                    <hr>
+                    <form action="/admin/profil/add" id="form-add" method="post" enctype="multipart/form-data">
+                        {# begin:: token and id #}
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('add') }}">
+                        <input type="hidden" id="inpidprofil">
+                        {# end:: token and id #}
+
+                        <div class="form-group">                            
+                            <h4 class="card-title">Judul *</h4>
+                            <input type="text" class="form-control form-control-sm" name="inpjudul" id="inpjudul" placeholder="Masukkan Judul" />
+                            <div id="error"></div>
+                        </div>
+                        <div class="form-group">
+                            <h4 class="card-title">Gambar *</h4>
+                            <div id="lihat_gambar" style="padding-bottom: 10px"></div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend" style="height: 35px;">
+                                    <span class="input-group-text">Gambar</span>
+                                </div>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" name="inpgambar" id="inpgambar" />
+                                    <label class="custom-file-label form-control-sm">Choose file</label>
+                                </div>
+                            </div>
+                            <div id="centang_gambar"></div>
+                            <div id="error"></div>
+                        </div>
+                        <div class="form-group">                            
+                            <h4 class="card-title">Isi *</h4>
+                            <textarea name="inpisi" id="inpisi"></textarea>
+                            <div id="error"></div>
+                        </div>
+                        <button type="submit" id="add" class="btn btn-outline-primary btn-sm btn-rounded">
+                            <i class="fas fa-plus"></i>&nbsp;Tambah
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# end:: form #}
+    {# begin:: tabel #}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Tabel</h3>
+                    <hr>
+                    <div class="table-responsive">
+                        <table id="tabel-profil" class="table table-striped table-bordered display no-wrap" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Aksi</th>
+                                    <th>Profil</th>
+                                    <th>Isi</th>
+                                    <th>Gambar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rows in data %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>
+                                        <button class="btn btn-outline-danger btn-sm btn-rounded" id="upd" data-id="{{ rows.id_profil }}">
+                                            <i class="fas fa-edit"></i>&nbsp;Ubah
+                                        </button>
+                                        <button class="btn btn-outline-primary btn-sm btn-rounded" id="del" data-id="{{ rows.id_profil }}">
+                                            <i class="fas fa-trash"></i>&nbsp;Hapus
+                                        </button>
+                                    </td>
+                                    <td>{{ rows.judul }}</td>
+                                    <td>{{ rows.isi|raw }}</td>
+                                    <td>
+                                        {% set fotoProfil = 'uploads/profil/'~rows.gambar %}
+                                        <img src="{{ (rows.gambar != null) ? asset(fotoProfil) : "https://www.gambarunik.id/wp-content/uploads/2019/06/Berbagai-Gambar-Foto-Profil-Kosong-Lucu-Untuk-Status.jpg" }}" id="lihat-gambar" alt="Profil" width="100" />
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# end:: tabel #}
+</div>
+{# end:: body #}
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('assets/admin/extra-libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/admin/dist/js/pages/datatable/datatable-basic.init.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+<script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
+
+<script>
+    // untuk textarea editor
+    CKEDITOR.replace('inpisi', {
+        language: 'en',
+    });
+
+    // untuk datatable
+    var untukDataTabel = function() {
+        $('#tabel-profil').DataTable();
+    }();
+
+    // untuk tambah data
+    var untukTambahData = function() {
+        var parsleyConfig = {
+            errorsContainer: function(parsleyField) {
+                var $err = parsleyField.$element.siblings('#error');
+                return $err;
+            }
+        }
+
+        $('#form-add').parsley(parsleyConfig);
+
+        $('#form-add').submit(function(e) {
+            e.preventDefault();
+
+            $('#inpjudul').attr('required', 'required');
+            $('#inpgambar').attr('required', 'required');
+            $('#inpisi').attr('required', 'required');
+
+            if ($('#form-add').parsley().isValid() == true) {
+                $.ajax({
+                    method: $(this).attr('method'),
+                    url: $(this).attr('action'),
+                    data: new FormData(this),
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    beforeSend: function() {
+                        $('#add').attr('disabled', 'disabled');
+                        $('#add').html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                    },
+                    success: function(response) {
+                        swal({
+                            title: response.title,
+                            text: response.text,
+                            icon: response.type,
+                            button: response.button,
+                        })
+                        .then((value) => {
+                            location.reload();
+                        });
+                    }
+                })
+            }
+        });
+    }();
+
+    // untuk get id
+    var untukGetIdData = function() {
+        $(document).on('click', '#upd', function() {
+            var ini = $(this);
+
+            $.ajax({
+                type: "post",
+                url: "profil/get",
+                dataType: 'json',
+                data: {
+                    id: ini.data('id')
+                },
+                beforeSend: function() {
+                    ini.attr('disabled', 'disabled');
+                    ini.html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                    $('#inpjudul').val('');
+                    $('#inpgambar').val('');
+                    $('#inpisi').val('');
+                },
+                success: function(data) {
+                    $('form').attr('action', 'profil/upd');
+                    $('form').attr('id', 'form-upd');
+                    $('#inpidprofil').attr('name', 'inpidprofil');
+                    $('#inpidprofil').val(data.id_profil);
+
+                    $('#inpjudul').val(data.judul);
+                    CKEDITOR.instances.inpisi.setData(data.isi)
+
+                    var lokasi_gambar = "{{ asset('uploads/profil/') }}"+data.gambar;
+                    $('#lihat_gambar').html(`<img src="`+lokasi_gambar+`" width="100" heigth="100" />`);
+                    $('#centang_gambar').html(`<input type="checkbox" name="ubah_gambar" id="ubah_gambar" /> Ubah gambar!`);
+                    $('#inpgambar').attr('disabled', 'disabled');
+                    $('#inpgambar').removeAttr('id');
+
+                    $('#add').html('<i class="fas fa-save"></i>&nbsp;Simpan');
+                    ini.removeAttr('disabled');
+                    ini.html('<i class="fas fa-edit"></i>&nbsp;Ubah');
+                }
+            });
+        });
+    }();
+
+     // untuk ubah gambar
+    var untukUbahGambar = function(){
+        $(document).on('click', '#ubah_gambar', function () {
+            var ini = $(this);
+            if (ini.is(':checked')) {
+                $("input[name*='inpgambar']").removeAttr('disabled');
+                $("input[name*='inpgambar']").attr('id', 'inpgambar');
+            } else {
+                $("input[name*='inpgambar']").attr('disabled', 'disabled');
+                $("input[name*='inpgambar']").removeAttr('id');
+                $("input[name*='inpgambar']").removeAttr('required');
+                ini.parent().parent().find('#error').empty();
+            }
+        });
+    }();
+
+    // untuk ubah data
+    var untukUbahData = function() {
+        var parsleyConfig = {
+            errorsContainer: function(parsleyField) {
+                var $err = parsleyField.$element.siblings('#error');
+                return $err;
+            }
+        }
+
+        $('#form-upd').parsley(parsleyConfig);
+
+        $(document).on('submit', '#form-upd', function (e) {
+            e.preventDefault();
+
+            CKEDITOR.instances.inpisi.updateElement();
+
+            $('#inpjudul').attr('required', 'required');
+            $('#inpisi').attr('required', 'required');
+
+            if ($('#form-upd').parsley().isValid() == true) {
+                $.ajax({
+                    method: $(this).attr('method'),
+                    url: $(this).attr('action'),
+                    data: new FormData(this),
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $('#add').attr('disabled', 'disabled');
+                        $('#add').html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                    },
+                    success: function (response) {
+                        swal({
+                            title: response.title,
+                            text: response.text,
+                            icon: response.type,
+                            button: response.button,
+                        })
+                        .then((value) => {
+                            location.reload();
+                        });
+                    }
+                })
+            }
+        });
+    }();
+
+    // untuk hapus data
+    var untukHapusData = function() {
+        $(document).on('click', '#del', function() {
+            var ini = $(this);
+
+            swal({
+                title: "Apakah Anda yakin ingin menghapusnya?",
+                text: "Data yang telah dihapus tidak dapat dikembalikan!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((del) => {
+                if (del) {
+                    $.ajax({
+                        type: "post",
+                        url: "profil/del",
+                        dataType: 'json',
+                        data: {
+                            id: ini.data('id')
+                        },
+                        beforeSend: function() {
+                            ini.attr('disabled', 'disabled');
+                            ini.html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                        },
+                        success: function(response) {
+                            swal({
+                                title: response.title,
+                                text: response.text,
+                                icon: response.type,
+                                button: response.button,
+                            })
+                            .then((value) => {
+                                location.reload();
+                            });
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
+        });
+    }();
+</script>
+{% endblock %}

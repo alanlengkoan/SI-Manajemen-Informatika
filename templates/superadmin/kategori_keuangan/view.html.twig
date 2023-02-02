@@ -1,0 +1,265 @@
+{% extends 'superadmin/layout.html.twig' %}
+
+{% block title %}{{ halaman }}{% endblock %}
+
+{% block stylesheets %}
+<link href="{{ asset('assets/admin/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css') }}" rel="stylesheet"/>
+{% endblock %}
+
+{% block body %}
+{# begin:: head #}
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-7 align-self-center">
+            <h2 class="page-title text-truncate text-dark font-weight-medium mb-1">{{ halaman }}</h2>
+        </div>
+    </div>
+</div>
+{# end:: head #}
+
+{# begin:: body #}
+<div class="container-fluid">
+    {# begin:: form #}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Form</h3>
+                    <hr>
+                    <form action="/superadmin/keuangan/add" id="form-add" method="post">
+                        {# begin:: token and id #}
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('add') }}">
+                        <input type="hidden" id="inpidkeuangan">
+                        {# end:: token and id #}
+
+                        <div class="form-group">                            
+                            <h4 class="card-title">Nama Keuangan *</h4>
+                            <input type="text" class="form-control form-control-sm" name="inpnama" id="inpnama" placeholder="Masukkan Kategori" />
+                            <div id="error"></div>
+                        </div>
+                        <button type="submit" id="add" class="btn btn-outline-primary btn-sm btn-rounded">
+                            <i class="fas fa-plus"></i>&nbsp;Tambah
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# end:: form #}
+    {# begin:: tabel #}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Tabel</h3>
+                    <hr>
+                    <div class="table-responsive">
+                        <table id="tabel-keuangan" class="table table-striped table-bordered display no-wrap" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Aksi</th>
+                                    <th>Nama</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rows in keuangan %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>
+                                        <button class="btn btn-outline-danger btn-sm btn-rounded" id="upd" data-id="{{ rows.id_keuangan }}">
+                                            <i class="fas fa-edit"></i>&nbsp;Ubah
+                                        </button>
+                                        <button class="btn btn-outline-primary btn-sm btn-rounded" id="del" data-id="{{ rows.id_keuangan }}">
+                                            <i class="fas fa-trash"></i>&nbsp;Hapus
+                                        </button>
+                                    </td>
+                                    <td>{{ rows.nama }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# end:: tabel #}
+</div>
+{# end:: body #}
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('assets/admin/extra-libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/admin/dist/js/pages/datatable/datatable-basic.init.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+
+<script>
+    // untuk datatable
+    var untukDataTabel = function() {
+        $('#tabel-keuangan').DataTable();
+    }();
+
+    // untuk tambah data
+    var untukTambahData = function() {
+        var parsleyConfig = {
+            errorsContainer: function(parsleyField) {
+                var $err = parsleyField.$element.siblings('#error');
+                return $err;
+            }
+        }
+
+        $('#form-add').parsley(parsleyConfig);
+
+        $('#form-add').submit(function(e) {
+            e.preventDefault();
+
+            $('#inpnama').attr('required', 'required');
+
+            if ($('#form-add').parsley().isValid() == true) {
+                $.ajax({
+                    method: $(this).attr('method'),
+                    url: $(this).attr('action'),
+                    data: new FormData(this),
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    beforeSend: function() {
+                        $('#add').attr('disabled', 'disabled');
+                        $('#add').html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                    },
+                    success: function(response) {
+                        swal({
+                            title: response.title,
+                            text: response.text,
+                            icon: response.type,
+                            button: response.button,
+                        })
+                        .then((value) => {
+                            location.reload();
+                        });
+                    }
+                })
+            }
+        });
+    }();
+
+    // untuk get id
+    var untukGetIdData = function() {
+        $(document).on('click', '#upd', function() {
+            var ini = $(this);
+
+            $.ajax({
+                type: "post",
+                url: "keuangan/get",
+                dataType: 'json',
+                data: {
+                    id: ini.data('id')
+                },
+                beforeSend: function() {
+                    ini.attr('disabled', 'disabled');
+                    ini.html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                },
+                success: function(data) {
+                    $('form').attr('action', 'keuangan/upd');
+                    $('form').attr('id', 'form-upd');
+                    $('#inpidkeuangan').attr('name', 'inpidkeuangan');
+                    $('#inpidkeuangan').attr('value', data.id_keuangan);
+                    $('#inpnama').val(data.nama);
+                    $('#add').html('<i class="fas fa-save"></i>&nbsp;Simpan');
+                    ini.removeAttr('disabled');
+                    ini.html('<i class="fas fa-edit"></i>&nbsp;Ubah');
+                }
+            });
+        });
+    }();
+
+    // untuk ubah data
+    var untukUbahData = function() {
+        var parsleyConfig = {
+            errorsContainer: function(parsleyField) {
+                var $err = parsleyField.$element.siblings('#error');
+                return $err;
+            }
+        }
+
+        $('#form-upd').parsley(parsleyConfig);
+
+        $(document).on('submit', '#form-upd', function (e) {
+            e.preventDefault();
+
+            $('#inpnama').attr('required', 'required');
+
+            if ($('#form-upd').parsley().isValid() == true) {
+                $.ajax({
+                    method: $(this).attr('method'),
+                    url: $(this).attr('action'),
+                    data: new FormData(this),
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $('#add').attr('disabled', 'disabled');
+                        $('#add').html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                    },
+                    success: function (response) {
+                        swal({
+                            title: response.title,
+                            text: response.text,
+                            icon: response.type,
+                            button: response.button,
+                        })
+                        .then((value) => {
+                            location.reload();
+                        });
+                    }
+                })
+            }
+        });
+    }();
+
+     // untuk hapus data
+    var untukHapusData = function() {
+        $(document).on('click', '#del', function() {
+            var ini = $(this);
+
+            swal({
+                title: "Apakah Anda yakin ingin menghapusnya?",
+                text: "Data yang telah dihapus tidak dapat dikembalikan!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((del) => {
+                if (del) {
+                    $.ajax({
+                        type: "post",
+                        url: "keuangan/del",
+                        dataType: 'json',
+                        data: {
+                            id: ini.data('id')
+                        },
+                        beforeSend: function () {
+                            ini.attr('disabled', 'disabled');
+                            ini.html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                        },
+                        success: function (response) {
+                            swal({
+                                title: response.title,
+                                text: response.text,
+                                icon: response.type,
+                                button: response.button,
+                            })
+                            .then((value) => {
+                                location.reload();
+                            });
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
+        });
+    }();
+</script>
+{% endblock %}

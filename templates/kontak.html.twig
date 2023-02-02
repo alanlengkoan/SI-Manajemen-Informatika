@@ -1,0 +1,50 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ halaman }}{% endblock %}
+
+{% block header %}
+<h4 class="text-light">
+    <a href="{{ path('home') }}"> Home </a> <span> / {{ halaman }}
+</h4>
+{% endblock %}
+
+{% block body %}
+<main id="main">
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="info-wrap">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 info">
+                        <i class="icofont-google-map"></i>
+                        <h4>Lokasi:</h4>
+                        <p>{{ klasis.alamat }}</p>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 info mt-4 mt-lg-0">
+                        <i class="icofont-clock-time icofont-rotate-90"></i>
+                        <h4>Jam Operasional:</h4>
+                        <p>{{ klasis.jadwal_ibadah }}</p>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 info mt-4 mt-lg-0">
+                        <i class="icofont-envelope"></i>
+                        <h4>Email:</h4>
+                        <p>{{ klasis.email }}</p>
+                    </div>
+                    <div class="col-lg-3 col-md-6 info mt-4 mt-lg-0">
+                        <i class="icofont-phone"></i>
+                        <h4>Telepon:</h4>
+                        <p> {{ klasis.telepon }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="map" style="height: 500px;width: 100%;position: relative;overflow: hidden;">
+        <iframe style="height: 500px; width: 100%;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3973.726596896793!2d119.44587461409297!3d-5.147643053473923!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dbee2cedee854a9%3A0x198406397b1d0e6c!2sJl.%20Inspeksi%20Kanal%20No.2%2C%20Karampuang%2C%20Kec.%20Panakkukang%2C%20Kota%20Makassar%2C%20Sulawesi%20Selatan%2090231!5e0!3m2!1sid!2sid!4v1608389857943!5m2!1sid!2sid" frameborder="0" allowfullscreen></iframe>
+    </div>
+</main>
+{% endblock %}
+
+{% block javascripts %}{% endblock %}

@@ -1,0 +1,256 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ halaman }}{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('assets/user/main.css') }}">
+{% endblock %}
+
+{% block header %}
+<h4 class="text-light">
+    <a href="{{ path('home') }}"> Home </a> <span> / {{ halaman }}
+</h4>
+{% endblock %}
+
+{% block body %}
+{# begin:: body #}
+<main id="main">
+    {# begin:: tentang #}
+    <section id="tentang" class="tentang">
+        <div class="container">
+            <div class="section-title">
+                <h1> Tentang </h1>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-lg-12">
+                    {{ detail.tentang|raw }}
+                </div>
+            </div>
+        </div>
+        <div class="container mt-5">
+            <div class="info-wrap">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 info">
+                        <i class="icofont-google-map"></i>
+                        <h4>Lokasi:</h4>
+                        <p>{{ detail.alamat }}</p>
+                    </div>
+                    <div class="col-lg-3 col-md-6 info mt-4 mt-lg-0">
+                        <i class="icofont-clock-time icofont-rotate-90"></i>
+                        <h4>Jam Ibadah:</h4>
+                        <p>{{ detail.jadwal_ibadah }}</p>
+                    </div>
+                    <div class="col-lg-3 col-md-6 info mt-4 mt-lg-0">
+                        <i class="icofont-envelope"></i>
+                        <h4>Email:</h4>
+                        <p>{{ detail.email }}</p>
+                    </div>
+                    <div class="col-lg-3 col-md-6 info mt-4 mt-lg-0">
+                        <i class="icofont-phone"></i>
+                        <h4>Telepon:</h4>
+                        <p>{{ detail.telepon }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {# end:: tentang #}
+
+    {# begin:: jemaat #}
+    <section id="jemaat" class="jemaat">
+        <div class="container">
+            <div class="section-title">
+                <h1>Jumlah Jemaat</h1>
+            </div>
+            <div class="container">
+                <div class="text-center" style="font-size: 50px">
+                    <i class="icofont-users"></i><br>{{ jumlah_jemaat }}
+                </div>
+            </div>
+        </div>
+    </section>
+    {# end:: jemaat #}
+
+    {# begin:: warta #}
+    <section id="warta" class="warta">
+        <div class="container">
+            <div class="section-title">
+                <h1>Warta Jemaat</h1>
+            </div>
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col-lg-12 col-md-12">
+                        <a href="/gereja/warta/{{ detail.id_gereja }}" target="_blank" style="font-size: 50px">
+                            <i class="icofont-book"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {# end:: warta #}
+
+    {# begin:: jadwal ibadah minggu #}
+    <section id="jadwal" class="jadwal">
+        <div class="container">
+            <div class="section-title">
+                <h1>Jadwal Ibadah Minggu</h1>
+            </div>
+            <div class="row">
+                {% for rows in jadwal_minggu %}
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="single-latest-sermons mb-100">
+                            <div class="sermons-thumbnail">
+                                <img src="https://bengkuluekspress.com/wp-content/uploads/2018/12/gereja.jpg" alt="">
+                                <div class="sermons-date">
+                                    <h6><span>{{ rows.tanggal_ibadah|date('d') }}</span>{{ rows.tanggal_ibadah|date('F') }}</h6>
+                                </div>
+                            </div>
+                            <div class="sermons-content">
+                                <div class="sermons-meta-data">
+                                    <p><i class="fa fa-user" aria-hidden="true"></i> Pelayanan: <span>{{ rows.nama_pelayan }}</span></p>
+                                    <p><i class="fa fa-calendar" aria-hidden="true"></i> Tanggal: <span>{{ rows.tanggal_ibadah|date('d F Y') }}</span></p>
+                                    <p><i class="fa fa-clock" aria-hidden="true"></i> Jam: <span>{{ rows.tanggal_ibadah|date('H : s') }} - sampai selesai.</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {# end:: jadwal ibadah minggu #}
+
+    {# begin:: jadwal ibadah harian #}
+    <section id="jadwal" class="jadwal">
+        <div class="container">
+            <div class="section-title">
+                <h1>Jadwal Ibadah Harian</h1>
+            </div>
+            <div class="row">
+                {% for rows in jadwal %}
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="single-latest-sermons mb-100">
+                            <div class="sermons-thumbnail">
+                                <img src="https://bengkuluekspress.com/wp-content/uploads/2018/12/gereja.jpg" alt="">
+                                <div class="sermons-date">
+                                    <h6><span>{{ rows.tanggal_ibadah|date('d') }}</span>{{ rows.tanggal_ibadah|date('F') }}</h6>
+                                </div>
+                            </div>
+                            <div class="sermons-content">
+                                <h4>{{ rows.alamat }}</h4>
+                                <div class="sermons-meta-data">
+                                    <p><i class="fa fa-user" aria-hidden="true"></i> Pelayanan: <span>{{ rows.nama_pelayan }}</span></p>
+                                    <p><i class="fa fa-home" aria-hidden="true"></i> Keluarga: <span>{{ rows.nama_keluarga }}</span></p>
+                                    <p><i class="fa fa-tag" aria-hidden="true"></i> Kategori: <span>{{ rows.nama }}</span></p>
+                                    <p><i class="fa fa-calendar" aria-hidden="true"></i> Tanggal: <span>{{ rows.tanggal_ibadah|date('d F Y') }}</span></p>
+                                    <p><i class="fa fa-clock" aria-hidden="true"></i> Jam: <span>{{ rows.tanggal_ibadah|date('H : s') }} - sampai selesai.</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {# end:: jadwal ibadah harian #}
+
+    {# begin:: pengurus #}
+    <section id="organization" class="organization">
+        <div class="container">
+            <div class="section-title">
+                <h1>Penggurus Gereja </h1>
+            </div>
+            <div class="row">
+                {% for rows in pengurus %}
+                    <div class="col-lg-4 col-md-6 mt-4">
+                        <div class="member">
+                            <div class="pic">
+                                {% set fotoAkun = 'uploads/akun/'~rows.foto %}
+                                <img src="{{ (rows.foto != null) ? asset(fotoAkun) : "https://www.gambarunik.id/wp-content/uploads/2019/06/Berbagai-Gambar-Foto-Profil-Kosong-Lucu-Untuk-Status.jpg" }}" class="img-fluid" alt="Profil" />
+                            </div>
+                            <div class="member-info">
+                                <h4>{{ rows.nama }}</h4>
+                                <span>{{ rows.jabatan }}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {# end:: pengurus #}
+
+    {# begin:: galery #}
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <div class="section-title">
+                <h1> Galery </h1>
+            </div>
+            <div class="row no-gutters">
+                {% for rows in galeri %}
+                <div class="col-lg-3 col-md-4">
+                    <div class="gallery-item">
+                        <a href="{{ asset('uploads/informasi/'~rows.gambar) }}" class="venobox" data-gall="gallery-item">
+                            <img src="{{ asset('uploads/informasi/'~rows.gambar) }}" alt="Galery" class="img-fluid" />
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {# end:: galery #}
+
+    {# begin:: location #}
+    <section id="location" class="location">
+        <div class="container">
+            <div class="section-title">
+                <h1> Lokasi </h1>
+            </div>
+        </div>
+
+        <div id="map" style="height: 500px; width: 100%;"></div>
+        <input type="hidden" name="inplat" id="inplat" value="{{ detail.lat }}" />
+        <input type="hidden" name="inplon" id="inplon" value="{{ detail.lon }}" />
+    </section>
+    {# end:: location #}
+</main>
+{# end:: body #}
+{% endblock %}
+
+{% block javascripts %}
+<script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-JpweDJ7_cA9-KiEq-iMjQzlluOemnWo&callback=initMap"></script>
+
+<script>
+    // untuk google maps
+    function initMap() {
+        var getLat = $('#inplat').val();
+        var getLon = $('#inplon').val();
+
+        var lokasi = {
+            lat: -5.161084,
+            lng: 119.431017
+        };
+
+        if (getLat != "" && getLon != "") {
+            lokasi = {
+                lat: parseFloat(getLat),
+                lng: parseFloat(getLon)
+            };
+        }
+
+        var map = new google.maps.Map(
+            document.getElementById('map'), {
+                center: lokasi,
+                zoom: 15,
+            });
+
+        var marker = new google.maps.Marker({
+            position: lokasi,
+            map: map,
+            title: 'Lokasi',
+        });
+    }
+</script>
+{% endblock %}

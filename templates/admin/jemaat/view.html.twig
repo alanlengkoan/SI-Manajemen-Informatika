@@ -1,0 +1,266 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ halaman }}{% endblock %}
+
+{% block stylesheets %}
+<link href="{{ asset('assets/admin/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css') }}" rel="stylesheet"/>
+{% endblock %}
+
+{% block body %}
+{# begin:: head #}
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-7 align-self-center">
+            <h2 class="page-title text-truncate text-dark font-weight-medium mb-1">{{ halaman }}</h2>
+        </div>
+    </div>
+</div>
+{# end:: head #}
+
+{# begin:: body #}
+<div class="container-fluid">
+    {# begin:: tabel #}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Tabel</h3>
+                    <hr>
+                    <div class="table-responsive">
+                        <table id="tabel-pengurus" class="table table-striped table-bordered display no-wrap" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Aksi</th>
+                                    <th>NIK</th>
+                                    <th>Nama</th>
+                                    <th>Tempat Lahir</th>
+                                    <th>Tanggal Lahir</th>
+                                    <th>Jenis Kelamin</th>
+                                    <th>Umur</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rows in data %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>
+                                        {% if rows.status == 0 %}
+                                            <button class="btn btn-outline-warning btn-sm btn-rounded" id="acc" data-id="{{ rows.idJemaat }}">
+                                                <i class="fas fa-check"></i>&nbsp;Verifikasi
+                                            </button>
+                                        {% else %}
+                                            <button class="btn btn-outline-danger btn-sm btn-rounded" id="upd" data-id="{{ rows.idJemaat }}" data-toggle="modal" data-target="#modal-ubah">
+                                                <i class="fas fa-edit"></i>&nbsp;Ubah
+                                            </button>
+                                        {% endif %}
+                                        <button class="btn btn-outline-primary btn-sm btn-rounded" id="del" data-id="{{ rows.idJemaat }}">
+                                            <i class="fas fa-trash"></i>&nbsp;Hapus
+                                        </button>
+                                    </td>
+                                    <td>{{ rows.nik }}</td>
+                                    <td>{{ rows.nama }}</td>
+                                    <td>{{ rows.tmpLahir }}</td>
+                                    <td>{{ rows.tglLahir|date('d-m-Y') }}</td>
+                                    <td>{{ (rows.jenkel == 'L') ? 'Laki-laki' : 'Perempuan' }}</td>
+                                    <td>{{ rows.tglLahir|date('Y-m-d')|umur }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# end:: tabel #}
+</div>
+{# end:: body #}
+
+{# begin:: modal ubah #}
+<div class="modal fade" id="modal-ubah" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ubah {{ halaman }}</h5>
+            </div>
+            <div class="modal-body">
+                <!-- begin:: form ubah -->
+                <div id="get-form-upd"></div>
+                <!-- end:: form ubah -->
+            </div>
+        </div>
+    </div>
+</div>
+{# end:: modal ubah #}7
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('assets/admin/extra-libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/admin/dist/js/pages/datatable/datatable-basic.init.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+
+<script>
+    // untuk datatable
+    var untukDataTabel = function() {
+        $('#tabel-pengurus').DataTable();
+    }();
+
+    // untuk get id
+    var untukGetIdData = function() {
+        $(document).on('click', '#upd', function() {
+            var ini = $(this);
+
+            $.ajax({
+                type: "post",
+                url: "jemaat/get",
+                dataType: 'html',
+                data: {
+                    id: ini.data('id')
+                },
+                beforeSend: function() {
+                    $('#get-form-upd').html(`<div class="center"><div class="loader"></div></div>`);
+                    ini.attr('disabled', 'disabled');
+                    ini.html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                },
+                success: function(response) {
+                    $('#get-form-upd').html(response);
+                    $('#add').html('<i class="fas fa-save"></i>&nbsp;Simpan');
+                    ini.removeAttr('disabled');
+                    ini.html('<i class="fas fa-edit"></i>&nbsp;Ubah');
+                }
+            });
+        });
+    }();
+
+    // untuk ubah data
+    var untukUbahData = function() {
+        $(document).on('submit', '#form-upd', function (e) {
+            e.preventDefault();
+
+            $('#inpnama').attr('required', 'required');
+            $('#inptmp_lhr').attr('required', 'required');
+            $('#inptgl_lhr').attr('required', 'required');
+            $('#inpjen_kel').attr('required', 'required');
+            $('#inppekerjaan').attr('required', 'required');
+            $('#inpno_telpon').attr('required', 'required');
+            $('#inpgereja').attr('required', 'required');
+            $('#inpalamat').attr('required', 'required');
+
+            if ($('#form-upd').parsley().isValid() == true) {
+                $.ajax({
+                    method: $(this).attr('method'),
+                    url: $(this).attr('action'),
+                    data: new FormData(this),
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $('#add').attr('disabled', 'disabled');
+                        $('#add').html('<i class="fas fa-spinner"></i>&nbsp;Waiting...');
+                    },
+                    success: function (response) {
+                        swal({
+                            title: response.title,
+                            text: response.text,
+                            icon: response.type,
+                            button: response.button,
+                        })
+                        .then((value) => {
+                            location.reload();
+                        });
+                    }
+                })
+            }
+        });
+    }();
+
+    // untuk verifikasi data jemaat
+    var untukHapusData = function() {
+        $(document).on('click', '#acc', function() {
+            var ini = $(this);
+
+            swal({
+                title: "Apakah Anda yakin ingin jemaat terdaftar dalam database Anda?",
+                text: "Data yang telah diproses tidak dapat dikembalikan!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((del) => {
+                if (del) {
+                    $.ajax({
+                        type: "post",
+                        url: "{{ path('admin_jemaat_acc') }}",
+                        dataType: 'json',
+                        data: {
+                            id: ini.data('id')
+                        },
+                        beforeSend: function() {
+                            ini.attr('disabled', 'disabled');
+                            ini.html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                        },
+                        success: function(response) {
+                            swal({
+                                title: response.title,
+                                text: response.text,
+                                icon: response.type,
+                                button: response.button,
+                            })
+                            .then((value) => {
+                                location.reload();
+                            });
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
+        });
+    }();
+
+    // untuk hapus data
+    var untukHapusData = function() {
+        $(document).on('click', '#del', function() {
+            var ini = $(this);
+
+            swal({
+                title: "Apakah Anda yakin ingin menghapusnya?",
+                text: "Data yang telah dihapus tidak dapat dikembalikan!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((del) => {
+                if (del) {
+                    $.ajax({
+                        type: "post",
+                        url: "jemaat/del",
+                        dataType: 'json',
+                        data: {
+                            id: ini.data('id')
+                        },
+                        beforeSend: function() {
+                            ini.attr('disabled', 'disabled');
+                            ini.html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                        },
+                        success: function(response) {
+                            swal({
+                                title: response.title,
+                                text: response.text,
+                                icon: response.type,
+                                button: response.button,
+                            })
+                            .then((value) => {
+                                location.reload();
+                            });
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
+        });
+    }();
+</script>
+{% endblock %}

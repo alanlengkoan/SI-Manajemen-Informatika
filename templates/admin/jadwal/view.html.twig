@@ -1,0 +1,313 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ halaman }}{% endblock %}
+
+{% block stylesheets %}
+<link href="{{ asset('assets/admin/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css') }}" rel="stylesheet"/>
+{% endblock %}
+
+{% block body %}
+{# begin:: head #}
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-7 align-self-center">
+            <h2 class="page-title text-truncate text-dark font-weight-medium mb-1">{{ halaman }}</h2>
+        </div>
+    </div>
+</div>
+{# end:: head #}
+
+{# begin:: body #}
+<div class="container-fluid">
+    {# begin:: form #}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Form</h3>
+                    <hr>
+                    <form action="/admin/jadwal/add" id="form-add" method="post">
+                        {# begin:: token and id #}
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('add') }}">
+                        <input type="hidden" id="inpidjadwalrincian">
+                        {# end:: token and id #}
+
+                        <div class="form-group">
+                            <h4 class="card-title">Jadwal *</h4>
+                            <select style="width: 100%" class="form-control form-control-sm" name="inpidjadwal" id="inpidjadwal">
+                                <option value="">- Pilih Kategori -</option>
+                                {% for rows in jadwal %}
+                                <option value="{{ rows.id_jadwal }}">{{ rows.nama }}</option>
+                                {% endfor %}
+                            </select>
+                            <div id="error"></div>
+                        </div>
+                        <div class="form-group">                            
+                            <h4 class="card-title">Nama Keluarga *</h4>
+                            <input type="text" class="form-control form-control-sm" name="inpnamakel" id="inpnamakel" placeholder="Masukkan Nama Keluarga" />
+                            <div id="error"></div>
+                        </div>
+                        <div class="form-group">                            
+                            <h4 class="card-title">Nama Pelayan *</h4>
+                            <input type="text" class="form-control form-control-sm" name="inpnamapel" id="inpnamapel" placeholder="Masukkan Nama Palayan" />
+                            <div id="error"></div>
+                        </div>
+                        <div class="form-group">                            
+                            <h4 class="card-title">Alamat *</h4>
+                            <textarea class="form-control form-control-sm" name="inpalamat" id="inpalamat" rows="2" placeholder="Masukkan Alamat"></textarea>
+                            <div id="error"></div>
+                        </div>
+                        <div class="form-group">                            
+                            <h4 class="card-title">Tanggal Ibadah *</h4>
+                            <input type="datetime-local" class="form-control form-control-sm" name="inptglibadah" id="inptglibadah" />
+                            <div id="error"></div>
+                        </div>
+                        <button type="submit" id="add" class="btn btn-outline-primary btn-sm btn-rounded">
+                            <i class="fas fa-plus"></i>&nbsp;Tambah
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# end:: form #}
+    {# begin:: tabel #}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Tabel</h3>
+                    <hr>
+                    <div class="table-responsive">
+                        <table id="tabel-jadwal" class="table table-striped table-bordered display no-wrap" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Aksi</th>
+                                    <th>Jadwal</th>
+                                    <th>Nama Keluarga</th>
+                                    <th>Nama Pelayan</th>
+                                    <th>Tanggal Ibadah</th>
+                                    <th>Jam Ibadah</th>
+                                    <th>Alamat</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rows in data %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>
+                                        <button class="btn btn-outline-danger btn-sm btn-rounded" id="upd" data-id="{{ rows.id_jadwal_rincian }}">
+                                            <i class="fas fa-edit"></i>&nbsp;Ubah
+                                        </button>
+                                        <button class="btn btn-outline-primary btn-sm btn-rounded" id="del" data-id="{{ rows.id_jadwal_rincian }}">
+                                            <i class="fas fa-trash"></i>&nbsp;Hapus
+                                        </button>
+                                    </td>
+                                    <td>{{ rows.nama }}</td>
+                                    <td>{{ rows.nama_keluarga }}</td>
+                                    <td>{{ rows.nama_pelayan }}</td>
+                                    <td>{{ rows.tanggal_ibadah|date('d-m-Y') }}</td>
+                                    <td>{{ rows.tanggal_ibadah|date('H:i') }}</td>
+                                    <td>{{ rows.alamat }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# end:: tabel #}
+</div>
+{# end:: body #}
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('assets/admin/extra-libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/admin/dist/js/pages/datatable/datatable-basic.init.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+
+<script>
+    // untuk datatable
+    var untukDataTabel = function() {
+        $('#tabel-jadwal').DataTable();
+    }();
+
+    // untuk tambah data
+    var untukTambahData = function() {
+        var parsleyConfig = {
+            errorsContainer: function(parsleyField) {
+                var $err = parsleyField.$element.siblings('#error');
+                return $err;
+            }
+        }
+
+        $('#form-add').parsley(parsleyConfig);
+
+        $('#form-add').submit(function(e) {
+            e.preventDefault();
+
+            $('#inpidjadwal').attr('required', 'required');
+            $('#inpnamakel').attr('required', 'required');
+            $('#inpnamapel').attr('required', 'required');
+            $('#inpalamat').attr('required', 'required');
+            $('#inptglibadah').attr('required', 'required');
+
+            if ($('#form-add').parsley().isValid() == true) {
+                $.ajax({
+                    method: $(this).attr('method'),
+                    url: $(this).attr('action'),
+                    data: new FormData(this),
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    beforeSend: function() {
+                        $('#add').attr('disabled', 'disabled');
+                        $('#add').html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                    },
+                    success: function(response) {
+                        swal({
+                            title: response.title,
+                            text: response.text,
+                            icon: response.type,
+                            button: response.button,
+                        })
+                        .then((value) => {
+                            location.reload();
+                        });
+                    }
+                })
+            }
+        });
+    }();
+
+    // untuk get id
+    var untukGetIdData = function() {
+        $(document).on('click', '#upd', function() {
+            var ini = $(this);
+
+            $.ajax({
+                type: "post",
+                url: "jadwal/get",
+                dataType: 'json',
+                data: {
+                    id: ini.data('id')
+                },
+                beforeSend: function() {
+                    ini.attr('disabled', 'disabled');
+                    ini.html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                },
+                success: function(data) {
+                    $('form').attr('action', 'jadwal/upd');
+                    $('form').attr('id', 'form-upd');
+                    $('#inpidjadwalrincian').attr('name', 'inpidjadwalrincian');
+                    $('#inpidjadwalrincian').val(data.id_jadwal_rincian);
+
+                    $('#inpidjadwal').val(data.id_jadwal);
+                    $('#inpnamakel').val(data.nama_keluarga);
+                    $('#inpnamapel').val(data.nama_pelayan);
+                    $('#inpalamat').val(data.alamat);
+                    $('#inptglibadah').val(data.tanggal_ibadah);
+                    $('#add').html('<i class="fas fa-save"></i>&nbsp;Simpan');
+                    ini.removeAttr('disabled');
+                    ini.html('<i class="fas fa-edit"></i>&nbsp;Ubah');
+                }
+            });
+        });
+    }();
+
+    // untuk ubah data
+    var untukUbahData = function() {
+        var parsleyConfig = {
+            errorsContainer: function(parsleyField) {
+                var $err = parsleyField.$element.siblings('#error');
+                return $err;
+            }
+        }
+
+        $('#form-upd').parsley(parsleyConfig);
+
+        $(document).on('submit', '#form-upd', function (e) {
+            e.preventDefault();
+
+            $('#inpidjadwal').attr('required', 'required');
+            $('#inpnamakel').attr('required', 'required');
+            $('#inpnamapel').attr('required', 'required');
+            $('#inpalamat').attr('required', 'required');
+            $('#inptglibadah').attr('required', 'required');
+
+            if ($('#form-upd').parsley().isValid() == true) {
+                $.ajax({
+                    method: $(this).attr('method'),
+                    url: $(this).attr('action'),
+                    data: new FormData(this),
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $('#add').attr('disabled', 'disabled');
+                        $('#add').html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                    },
+                    success: function (response) {
+                        swal({
+                            title: response.title,
+                            text: response.text,
+                            icon: response.type,
+                            button: response.button,
+                        })
+                        .then((value) => {
+                            location.reload();
+                        });
+                    }
+                })
+            }
+        });
+    }();
+
+    // untuk hapus data
+    var untukHapusData = function() {
+        $(document).on('click', '#del', function() {
+            var ini = $(this);
+
+            swal({
+                title: "Apakah Anda yakin ingin menghapusnya?",
+                text: "Data yang telah dihapus tidak dapat dikembalikan!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((del) => {
+                if (del) {
+                    $.ajax({
+                        type: "post",
+                        url: "jadwal/del",
+                        dataType: 'json',
+                        data: {
+                            id: ini.data('id')
+                        },
+                        beforeSend: function() {
+                            ini.attr('disabled', 'disabled');
+                            ini.html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
+                        },
+                        success: function(response) {
+                            swal({
+                                title: response.title,
+                                text: response.text,
+                                icon: response.type,
+                                button: response.button,
+                            })
+                            .then((value) => {
+                                location.reload();
+                            });
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
+        });
+    }();
+</script>
+{% endblock %}

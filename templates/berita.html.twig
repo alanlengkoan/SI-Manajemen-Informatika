@@ -1,0 +1,39 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ halaman }}{% endblock %}
+
+{% block header %}
+<h4 class="text-light">
+    <a href="{{ path('home') }}"> Home </a> <span> / {{ halaman }}
+</h4>
+{% endblock %}
+
+{% block body %}
+<main id="main">
+    <section id="about" class="about">
+        <div class="container">
+            <div class="row">
+                {% for rows in berita %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="post-entry-1 h-100">
+                            <a href="/berita/{{ rows.id_informasi }}">
+                                <img src="{{ asset('uploads/informasi/'~rows.gambar) }}" alt="Image" class="img-fluid" />
+                            </a>
+                            <div class="post-entry-1-contents">
+                                <h2><a href="/berita/{{ rows.id_informasi }}">{{ rows.judul }}</a></h2>
+                                <span class="meta d-inline-block mb-3">
+                                    {{ rows.tanggal_publish|date('d-m-Y') }}
+                                    <span class="mx-2">by</span> {{ rows.gereja }}
+                                </span>
+                                {{ rows.isi[:500]|raw }} <a href="/berita/{{ rows.id_informasi }}">Selengkapnya . . .</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block javascripts %}{% endblock %}

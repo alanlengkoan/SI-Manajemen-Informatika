@@ -1,0 +1,41 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    # untuk folder upload gambar
+    folder_keuangan: '%kernel.project_dir%/public_html/uploads/keuangan'
+    folder_informasi: '%kernel.project_dir%/public_html/uploads/informasi'
+    folder_profil: '%kernel.project_dir%/public_html/uploads/profil'
+    folder_akun: '%kernel.project_dir%/public_html/uploads/akun'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # untuk controller universal
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'
+
+    # untuk controller default
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+    # untuk controller admin
+    App\Controller\Admin\:
+        resource: '../src/Controller/Admin'
+        tags: ['controller.service_arguments']
+
+    # untuk controller superadmin
+    App\Controller\SuperAdmin\:
+        resource: '../src/Controller/SuperAdmin'
+        tags: ['controller.service_arguments']

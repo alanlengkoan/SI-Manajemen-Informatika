@@ -30,11 +30,41 @@ class JadwalController extends AbstractController
     {
         $data = [
             'halaman' => 'Kategori Jadwal',
-            'jadwal'  => $this->mng->getRepository(TbJadwal::class)->getAll(),
         ];
 
         return $this->render('superadmin/kategori_jadwal/view.html.twig', $data);
     }
+
+    /**
+     * @Route("/superadmin/jadwal/get_data", name="superadmin_jadwal_get_data")
+     */
+    // fungsi untuk get data all
+    public function get_data()
+    {
+        $get  = $this->mng->getRepository(TbJadwal::class)->getAll();
+        $data = ['data' => $get];
+
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/superadmin/jadwal/get", name="superadmin_jadwal_get")
+     */
+    // fungsi untuk get data by id
+    public function get_detail(Request $post)
+    {
+        $id = $post->request->get('id');
+
+        $jadwal = $this->mng->getRepository(TbJadwal::class)->findOneBy(['id_jadwal' => $id]);
+
+        $data = [
+            'id_jadwal' => $jadwal->getIdJadwal(),
+            'nama'      => $jadwal->getNama(),
+        ];
+
+        return new JsonResponse($data);
+    }
+
 
     /**
      * @Route("/superadmin/jadwal/add", name="superadmin_jadwal_add")
@@ -69,24 +99,6 @@ class JadwalController extends AbstractController
         }
 
         return new JsonResponse($response);
-    }
-
-    /**
-     * @Route("/superadmin/jadwal/get", name="superadmin_jadwal_get")
-     */
-    // fungsi untuk get data by id
-    public function get_data(Request $post)
-    {
-        $id = $post->request->get('id');
-
-        $jadwal = $this->mng->getRepository(TbJadwal::class)->findOneBy(['id_jadwal' => $id]);
-
-        $data = [
-            'id_jadwal' => $jadwal->getIdJadwal(),
-            'nama'      => $jadwal->getNama(),
-        ];
-
-        return new JsonResponse($data);
     }
 
     /**

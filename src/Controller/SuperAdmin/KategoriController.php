@@ -2,7 +2,6 @@
 
 namespace App\Controller\SuperAdmin;
 
-use App\Entity\TbJadwal;
 use App\Entity\TbKategori;
 use App\Service\MyfunctionHelper;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,11 +29,40 @@ class KategoriController extends AbstractController
     public function index()
     {
         $data = [
-            'halaman'  => 'Kategori Informasi',
-            'kategori' => $this->mng->getRepository(TbKategori::class)->getAll(),
+            'halaman' => 'Kategori Informasi',
         ];
 
         return $this->render('superadmin/kategori_informasi/view.html.twig', $data);
+    }
+
+    /**
+     * @Route("/superadmin/kategori/get_data", name="superadmin_kategori_get_data")
+     */
+    // fungsi untuk get data all
+    public function get_data()
+    {
+        $get  = $this->mng->getRepository(TbKategori::class)->getAll();
+        $data = ['data' => $get];
+
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/superadmin/kategori/get", name="superadmin_kategori_get")
+     */
+    // fungsi untuk get data by id
+    public function get_detail(Request $post)
+    {
+        $id = $post->request->get('id');
+
+        $kategori = $this->mng->getRepository(TbKategori::class)->findOneBy(['id_kategori' => $id]);
+
+        $data = [
+            'id_kategori' => $kategori->getIdKategori(),
+            'nama'        => $kategori->getNama(),
+        ];
+
+        return new JsonResponse($data);
     }
 
     /**
@@ -70,24 +98,6 @@ class KategoriController extends AbstractController
         }
 
         return new JsonResponse($response);
-    }
-
-    /**
-     * @Route("/superadmin/kategori/get", name="superadmin_kategori_get")
-     */
-    // fungsi untuk get data by id
-    public function get_data(Request $post)
-    {
-        $id = $post->request->get('id');
-
-        $kategori = $this->mng->getRepository(TbKategori::class)->findOneBy(['id_kategori' => $id]);
-
-        $data = [
-            'id_kategori' => $kategori->getIdKategori(),
-            'nama'        => $kategori->getNama(),
-        ];
-
-        return new JsonResponse($data);
     }
 
     /**

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Welcome{% endblock %}</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/user/img/logo.png') }}">
-    
+
     {# begin:: asset public css #}
     <link rel="stylesheet" href="{{ asset('assets/admin/extra-libs/c3/c3.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/admin/libs/chartist/dist/chartist.min.css') }}" />
@@ -19,11 +19,11 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
     <style>
-   .parsley-errors-list {
-        color: red;
-        list-style-type: none;
-        padding: 0;
-    }
+        .parsley-errors-list {
+            color: red;
+            list-style-type: none;
+            padding: 0;
+        }
     </style>
     {% block stylesheets %}{% endblock %}
 </head>
@@ -40,17 +40,21 @@
         <header class="topbar" data-navbarbg="skin6">
             <nav class="navbar top-navbar navbar-expand-md">
                 <div class="navbar-header" data-logobg="skin6">
-                    <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i class="ti-menu ti-close"></i></a>
+                    <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i
+                            class="ti-menu ti-close"></i></a>
                     <div class="navbar-brand">
                         <span>
                             <img src="{{ asset('assets/user/img/logo.png') }}" alt="homepage" class="dark-logo logo">
                         </span>
                     </div>
-                    <a class="topbartoggler d-block d-md-none waves-effect waves-light" href="javascript:void(0)" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i class="ti-more"></i></a>
+                    <a class="topbartoggler d-block d-md-none waves-effect waves-light" href="javascript:void(0)"
+                        data-toggle="collapse" data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i
+                            class="ti-more"></i></a>
                 </div>
                 <div class="navbar-collapse collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav float-left mr-auto ml-3 pl-1">
-                      <h3 class="page-title text-truncate text-dark font-weight-medium">Sistem Informasi Klasis Makassar</h3>
+                        <h3 class="page-title text-truncate text-dark font-weight-medium">Sistem Informasi Jemaat Sika</h3>
                     </ul>
                     <ul class="navbar-nav float-right">
                         <li class="nav-item dropdown">
@@ -60,8 +64,10 @@
                                 <i data-feather="chevron-down" class="svg-icon"></i>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right user-dd animated flipInY">
-                                <a class="dropdown-item" href="{{ path('superadmin_akun') }}"><i data-feather="user" class="svg-icon mr-2 ml-1"></i>Profile</a>
-                                <a class="dropdown-item" href="{{ path('app_logout') }}"> <i data-feather="power" class="svg-icon mr-2 ml-1"></i> Logout </a>
+                                <a class="dropdown-item" href="{{ path('superadmin_akun') }}"><i data-feather="user"
+                                        class="svg-icon mr-2 ml-1"></i>Profile</a>
+                                <a class="dropdown-item" href="{{ path('app_logout') }}"> <i data-feather="power"
+                                        class="svg-icon mr-2 ml-1"></i> Logout </a>
                             </div>
                         </li>
                     </ul>
@@ -82,19 +88,19 @@
                         <li class="nav-small-cap"><span class="hide-menu"> Master </span></li>
                         <li class="sidebar-item">
                             <a class="sidebar-link sidebar-link" href="{{ path('superadmin_kategori') }}">
-                                <i class="fa fa-list-alt"></i>
+                                <i class="fa fa-list"></i>
                                 <span class="hide-menu"> Kategori Informasi </span>
                             </a>
                         </li>
                         <li class="sidebar-item">
                             <a class="sidebar-link sidebar-link" href="{{ path('superadmin_jadwal') }}">
-                                <i class="fa fa-list-alt"></i>
+                                <i class="fa fa-list"></i>
                                 <span class="hide-menu"> Kategori Jadwal </span>
                             </a>
                         </li>
                         <li class="sidebar-item">
                             <a class="sidebar-link sidebar-link" href="{{ path('superadmin_keuangan') }}">
-                                <i class="fa fa-list-alt"></i>
+                                <i class="fa fa-list"></i>
                                 <span class="hide-menu"> Kategori Keuangan </span>
                             </a>
                         </li>
@@ -102,13 +108,13 @@
                         <li class="nav-small-cap"><span class="hide-menu"> Pustaka </span></li>
                         <li class="sidebar-item">
                             <a class="sidebar-link sidebar-link" href="{{ path('superadmin_gereja') }}">
-                                <i class="fa fa-book"></i>
+                                <i class="fa fa-list"></i>
                                 <span class="hide-menu"> Gereja </span>
                             </a>
                         </li>
                         <li class="sidebar-item">
                             <a class="sidebar-link sidebar-link" href="{{ path('superadmin_galeri') }}">
-                                <i class="fa fa-picture-o"></i>
+                                <i class="fa fa-list"></i>
                                 <span class="hide-menu"> Galeri </span>
                             </a>
                         </li>
@@ -126,7 +132,7 @@
                 <script>
                     document.write(new Date().getFullYear());
                 </script>
-                <a href="https://alanlengkoan.netlify.app/" target="_blank">AL</a> - Sistem Informasi Klasis Makassar.
+                <a href="https://alanlengkoan.com" target="_blank">AL</a> - Sistem Informasi Jemaat Sika.
             </footer>
         </div>
     </div>

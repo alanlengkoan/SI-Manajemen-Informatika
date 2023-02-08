@@ -105,38 +105,7 @@
                     <h3 class="card-title">Tabel</h3>
                     <hr>
                     <div class="table-responsive">
-                        <table id="tabel-informasi" class="table table-striped table-bordered display no-wrap" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>No.</th>
-                                    <th>Aksi</th>
-                                    <th>Nama</th>
-                                    <th>Email</th>
-                                    <th>Telepon</th>
-                                    <th>Alamat</th>
-                                    <th>Tentang</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for rows in gereja %}
-                                <tr>
-                                    <td>{{ loop.index }}</td>
-                                    <td>
-                                        <button class="btn btn-outline-danger btn-sm btn-rounded" id="del" data-id="{{ rows.id_gereja }}">
-                                            <i class="fas fa-trash"></i>&nbsp;Hapus
-                                        </button>
-                                        <button class="btn btn-outline-warning btn-sm btn-rounded" id="res-pass" data-id="{{ rows.id_gereja }}">
-                                            <i class="fas fa-refresh"></i>&nbsp;Reset Password
-                                        </button>
-                                    </td>
-                                    <td>{{ rows.nama }}</td>
-                                    <td>{{ (rows.email == null) ? 'Belum ada email.' : rows.email }}</td>
-                                    <td>{{ (rows.telepon == null) ? 'Belum ada telepon.' : rows.telepon }}</td>
-                                    <td>{{ (rows.alamat == null) ? 'Belum ada alamat.' : rows.alamat }}</td>
-                                    <td>{{ (rows.tentang == null) ? 'Belum ada tentang.' : rows.tentang }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
+                        <table id="tabel-gereja" class="table table-striped table-bordered display no-wrap" style="width:100%">
                         </table>
                     </div>
                 </div>
@@ -154,10 +123,69 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
 
 <script>
+    let dataTable = null;
+
+    // untuk datatable
+    var untukDataTabel = function () {
+        dataTable = $('#tabel-gereja').DataTable({
+            responsive: true,
+            processing: true,
+            lengthMenu: [5, 10, 25, 50],
+            pageLength: 10,
+            ajax: '/superadmin/gereja/get_data',
+            columns: [{
+                    title: 'No.',
+                    data: null,
+                    className: 'text-center',
+                    render: function (data, type, full, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                {
+                    title: 'Aksi',
+                    className: 'text-center',
+                    orderable: false,
+                    searchable: false,
+                    render: function (data, type, full, meta) {
+                        return `
+                            <button type="button" id="del" data-id="` + full.id_gereja + `" class="btn btn-outline-danger btn-sm btn-rounded"><i class="fas fa-trash"></i>&nbsp;Hapus</button>
+                            <button type="button" id="res-pass" data-id="` + full.id_gereja + `" class="btn btn-outline-warning btn-sm btn-rounded"><i class="fas fa-refresh"></i>&nbsp;Reset Password</button>&nbsp;
+                        `;
+                    },
+                },
+                {
+                    title: 'Nama',
+                    data: 'nama',
+                    className: 'text-center',
+                },
+                {
+                    title: 'Email',
+                    data: 'email',
+                    className: 'text-center',
+                },
+                {
+                    title: 'Telepon',
+                    data: 'telepon',
+                    className: 'text-center',
+                },
+                {
+                    title: 'Alamat',
+                    data: 'alamat',
+                    className: 'text-center',
+                },
+                {
+                    title: 'Tentang',
+                    data: 'tentang',
+                    className: 'text-center',
+                },
+            ],
+        });
+    }();
+
     // untuk tambah data
-    var untukTambahData = function() {
+    var untukTambahData = function () {
         var parsleyConfig = {
-            errorsContainer: function(parsleyField) {
+            errorsContainer: function (parsleyField) {
                 var $err = parsleyField.$element.siblings('#error');
                 return $err;
             }
@@ -165,7 +193,7 @@
 
         $('#form-add').parsley(parsleyConfig);
 
-        $('#form-add').submit(function(e) {
+        $('#form-add').submit(function (e) {
             e.preventDefault();
 
             $('#inpnama').attr('required', 'required');
@@ -173,7 +201,7 @@
             $('#inptelepon').attr('required', 'required');
             $('#inpalamat').attr('required', 'required');
             $('#inptentang').attr('required', 'required');
-            
+
             $('#inpnamagereja').attr('required', 'required');
             $('#inpusername').attr('required', 'required');
             $('#inppassword').attr('required', 'required');
@@ -186,18 +214,17 @@
                     contentType: false,
                     processData: false,
                     dataType: 'json',
-                    beforeSend: function() {
+                    beforeSend: function () {
                         $('#add').attr('disabled', 'disabled');
                         $('#add').html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
                     },
-                    success: function(response) {
+                    success: function (response) {
                         swal({
                             title: response.title,
                             text: response.text,
                             icon: response.type,
                             button: response.button,
-                        })
-                        .then((value) => {
+                        }).then((value) => {
                             location.reload();
                         });
                     }
@@ -207,8 +234,8 @@
     }();
 
     // untuk reset password data
-    var untukResetPassData = function() {
-        $(document).on('click', '#res-pass', function() {
+    var untukResetPassData = function () {
+        $(document).on('click', '#res-pass', function () {
             var ini = $(this);
 
             swal({
@@ -217,8 +244,7 @@
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
-            })
-            .then((del) => {
+            }).then((del) => {
                 if (del) {
                     $.ajax({
                         type: "post",
@@ -237,9 +263,8 @@
                                 text: response.text,
                                 icon: response.type,
                                 button: response.button,
-                            })
-                            .then((value) => {
-                                location.reload();
+                            }).then((value) => {
+                                dataTable.ajax.reload();
                             });
                         }
                     });
@@ -249,10 +274,10 @@
             });
         });
     }();
-        
+
     // untuk hapus data
-    var untukHapusData = function() {
-        $(document).on('click', '#del', function() {
+    var untukHapusData = function () {
+        $(document).on('click', '#del', function () {
             var ini = $(this);
 
             swal({
@@ -261,8 +286,7 @@
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
-            })
-            .then((del) => {
+            }).then((del) => {
                 if (del) {
                     $.ajax({
                         type: "post",
@@ -281,9 +305,8 @@
                                 text: response.text,
                                 icon: response.type,
                                 button: response.button,
-                            })
-                            .then((value) => {
-                                location.reload();
+                            }).then((value) => {
+                                dataTable.ajax.reload();
                             });
                         }
                     });

@@ -29,11 +29,40 @@ class KeuanganController extends AbstractController
     public function index()
     {
         $data = [
-            'halaman'  => 'Kategori Keuangan',
-            'keuangan' => $this->mng->getRepository(TbKeuangan::class)->getAll(),
+            'halaman' => 'Kategori Keuangan',
         ];
 
         return $this->render('superadmin/kategori_keuangan/view.html.twig', $data);
+    }
+
+    /**
+     * @Route("/superadmin/keuangan/get_data", name="superadmin_keuangan_get_data")
+     */
+    // fungsi untuk get data all
+    public function get_data()
+    {
+        $get  = $this->mng->getRepository(TbKeuangan::class)->getAll();
+        $data = ['data' => $get];
+
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/superadmin/keuangan/get", name="superadmin_keuangan_get")
+     */
+    // fungsi untuk get data by id
+    public function get_detail(Request $post)
+    {
+        $id = $post->request->get('id');
+
+        $keuangan = $this->mng->getRepository(TbKeuangan::class)->findOneBy(['id_keuangan' => $id]);
+
+        $data = [
+            'id_keuangan' => $keuangan->getIdKeuangan(),
+            'nama'        => $keuangan->getNama(),
+        ];
+
+        return new JsonResponse($data);
     }
 
     /**
@@ -69,24 +98,6 @@ class KeuanganController extends AbstractController
         }
 
         return new JsonResponse($response);
-    }
-
-    /**
-     * @Route("/superadmin/keuangan/get", name="superadmin_keuangan_get")
-     */
-    // fungsi untuk get data by id
-    public function get_data(Request $post)
-    {
-        $id = $post->request->get('id');
-
-        $keuangan = $this->mng->getRepository(TbKeuangan::class)->findOneBy(['id_keuangan' => $id]);
-
-        $data = [
-            'id_keuangan' => $keuangan->getIdKeuangan(),
-            'nama'        => $keuangan->getNama(),
-        ];
-
-        return new JsonResponse($data);
     }
 
     /**

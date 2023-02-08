@@ -11,5 +11,6 @@
 # my configuration
 /var
 /vendor
+/public_html/uploads
 .env
 composer.lock

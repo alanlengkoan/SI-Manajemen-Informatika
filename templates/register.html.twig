@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
     <meta charset="utf-8">
@@ -7,88 +7,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>{{ halaman }}</title>
+    <title>Jemaat Sika | {{ halaman }}</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('assets/user/img/logo.png') }}">
 
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    <link href="{{ asset('assets/user/sb-admin-2.min.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    
-    <style>
-    .parsley-errors-list {
-        color: red;
-        list-style-type: none;
-        padding: 0;
-    }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/user/login.css') }}">
 </head>
 
-<body class="bg-gradient-primary">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-xl-6 col-lg-6 col-md-6">
-                <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-body p-0">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="p-5">
-                                    <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">{{ halaman }}</h1>
-                                    </div>
-                                    <form id="form-add" class="user" action="{{ path('app_register_add') }}" method="post">
-
-                                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('register') }}">
-
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" name="inpnik" id="inpnik" placeholder="Nik" />
-                                            <div id="validasi-nik"></div>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" name="inpnama" id="inpnama" placeholder="Nama Lengkap" />
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" name="inptmp_lhr" id="inptmp_lhr" placeholder="Tempat Lahir" />
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control datepicker" name="inptgl_lhr" id="inptgl_lhr" placeholder="Tanggal Lahir" autocomplete="off" />
-                                        </div>
-                                        <div class="form-group">
-                                            <select class="form-control" name="inpjen_kel" id="inpjen_kel">
-                                                <option value="">Pilih Jenis Kelamin</option>
-                                                <option value="L">Laki - laki</option>
-                                                <option value="P">Perempuan</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" name="inppekerjaan" id="inppekerjaan" placeholder="Pekerjaan" />
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" name="inpno_telpon" id="inpno_telpon" placeholder="Nomor Telpon" />
-                                        </div>
-                                        <div class="form-group">
-                                            <select class="form-control" name="inpgereja" id="inpgereja">
-                                                <option value="">Pilih Gereja</option>
-                                                {% for rows in gereja %}
-                                                    <option value="{{ rows.id_gereja }}">{{ rows.nama }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <textarea class="form-control" name="inpalamat" id="inpalamat" placeholder="Alamat"></textarea>
-                                        </div>
-                                        <button type="submit" id="daftar" class="btn btn-primary btn-user btn-block">Daftar</button>
-                                        <a href="/" class="btn btn-danger btn-user btn-block">Batal</a>
-                                        <hr>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<body>
+    <div class="registration-form">
+        <form id="form-add" action="{{ path('app_register_add') }}" method="post">
+            <div class="form-head">
+                Registrasi
             </div>
-        </div>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('register') }}">
+            
+           <div class="form-group">
+               <input type="text" class="form-control item" name="inpnik" id="inpnik" placeholder="Nik" />
+               <div id="validasi-nik"></div>
+           </div>
+           <div class="form-group">
+               <input type="text" class="form-control item" name="inpnama" id="inpnama" placeholder="Nama Lengkap" />
+           </div>
+           <div class="form-group">
+               <input type="text" class="form-control item" name="inptmp_lhr" id="inptmp_lhr"
+                   placeholder="Tempat Lahir" />
+           </div>
+           <div class="form-group">
+               <input type="text" class="form-control item datepicker" name="inptgl_lhr" id="inptgl_lhr"
+                   placeholder="Tanggal Lahir" autocomplete="off" />
+           </div>
+           <div class="form-group">
+               <select class="form-control item" name="inpjen_kel" id="inpjen_kel">
+                   <option value="">Pilih Jenis Kelamin</option>
+                   <option value="L">Laki - laki</option>
+                   <option value="P">Perempuan</option>
+               </select>
+           </div>
+           <div class="form-group">
+               <input type="text" class="form-control item" name="inppekerjaan" id="inppekerjaan"
+                   placeholder="Pekerjaan" />
+           </div>
+           <div class="form-group">
+               <input type="text" class="form-control item" name="inpno_telpon" id="inpno_telpon"
+                   placeholder="Nomor Telpon" />
+           </div>
+           <div class="form-group">
+               <select class="form-control item" name="inpgereja" id="inpgereja">
+                   <option value="">Pilih Gereja</option>
+                   {% for rows in gereja %}
+                   <option value="{{ rows.id_gereja }}">{{ rows.nama }}</option>
+                   {% endfor %}
+               </select>
+           </div>
+           <div class="form-group">
+               <textarea class="form-control item" name="inpalamat" id="inpalamat" placeholder="Alamat"></textarea>
+           </div>
+            <div class="form-group">
+                <button type="submit" id="daftar" class="btn btn-block btn-user btn-success">Daftar</button>
+                <a href="/" class="btn btn-block btn-user btn-danger">Batal</a>
+            </div>
+        </form>
     </div>
-
-    <script src="{{ asset('assets/user/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="{{ asset('assets/user/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
@@ -167,8 +149,7 @@
                                 text: response.text,
                                 icon: response.type,
                                 button: response.button,
-                            })
-                            .then((value) => {
+                            })                            .then((value) => {
                                 location.href = '/'
                             });
                         }
@@ -177,7 +158,6 @@
             });
         }();
     </script>
-
 </body>
 
 </html>

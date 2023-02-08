@@ -4,12 +4,14 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Klasis Makassar | {% block title %}Beranda{% endblock %}</title>
+    <title>Jemaat Sika | {% block title %}Beranda{% endblock %}</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/user/img/logo.png') }}">
-    
+
     {# begin:: asset public css #}
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,300i,400,400i,600,600i,700,700i|Satisfy|Comic+Neue:300,300i,400,400i,700,700i">
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Poppins:300,300i,400,400i,600,600i,700,700i|Satisfy|Comic+Neue:300,300i,400,400i,700,700i">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
     <link rel="stylesheet" href="{{ asset('assets/user/vendor/bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/user/vendor/icofont/icofont.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/user/vendor/boxicons/css/boxicons.min.css') }}">
@@ -35,51 +37,49 @@
     <header id="header" class="fixed-top d-flex align-items-center header-transparent">
         <div class="container d-flex align-items-center">
             <div class="logo mr-auto">
-                <h1 class="text-light"><span>Klasis Makassar</span></h1>
+                <h1 class="text-light"><span>Jemaat Sika</span></h1>
             </div>
             <nav class="nav-menu d-none d-lg-block">
                 {% set current_path = app.request.get('_route') %}
                 <ul>
-                    <li class="{{ (current_path == 'home') or (current_path == 'index') ? 'active' : '' }}"> <a href="/">Beranda</a> </li>
-                    {% if gereja is not empty %}
-                    <li class="drop-down {{ (current_path == 'gereja') or (current_path == 'gereja_detail') ? 'active' : '' }}">
-                        <a href="{{ path('gereja') }}">Gereja</a>
-                        <ul>
-                            {% for rows in gereja %}
-                            <li><a href="/gereja/{{ rows.id_gereja }}">{{ rows.nama }}</a></li>
-                            {% endfor %}
-                        </ul>
+                    <li class="{{ (current_path == 'home') or (current_path == 'index') ? 'active' : '' }}">
+                        <a href="/">Beranda</a>
                     </li>
-                    {% endif %}
-                    <li class="{{ (current_path == 'berita') ? 'active' : '' }}"> <a href="{{ path('berita') }}">Berita</a> </li>
-                    <li class="{{ (current_path == 'galeri') ? 'active' : '' }}"> <a href="{{ path('galeri') }}">Galeri</a> </li>
-                    <li class="{{ (current_path == 'kontak') ? 'active' : '' }}"> <a href="{{ path('kontak') }}">Kontak</a> </li>
-                    <li class="{{ (current_path == 'tentang') ? 'active' : '' }}"> <a href="{{ path('tentang') }}">Tentang</a> </li>
-                    <li class="book-a-table text-center pt-2 pb-2"> <a href="{{ path('app_register') }}">Daftar</a> </li>
-                    <li class="book-a-table text-center pt-2 pb-2"> <a href="{{ path('app_login') }}">Masuk</a> </li>
+                    {% for rows in gereja %}
+                    <li>
+                        <a href="/gereja/{{ rows.id_gereja }}">{{ rows.nama }}</a>
+                    </li>
+                    {% endfor %}
+                    <li class="{{ (current_path == 'berita') ? 'active' : '' }}">
+                        <a href="{{ path('berita') }}">Berita</a>
+                    </li>
+                    <li class="{{ (current_path == 'galeri') ? 'active' : '' }}">
+                        <a href="{{ path('galeri') }}">Galeri</a>
+                    </li>
+                    <li class="{{ (current_path == 'kontak') ? 'active' : '' }}">
+                        <a href="{{ path('kontak') }}">Kontak</a>
+                    </li>
+                    <li class="{{ (current_path == 'tentang') ? 'active' : '' }}">
+                        <a href="{{ path('tentang') }}">Tentang</a>
+                    </li>
+                    <li class="book-a-table text-center pt-2 pb-2">
+                        <a href="{{ path('app_register') }}">Daftar</a>
+                    </li>
+                    <li class="book-a-table text-center pt-2 pb-2">
+                        <a href="{{ path('app_login') }}">Masuk</a>
+                    </li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <section id="hero">
-        <div class="hero-container">
-            <div id="heroCarousel" class="carousel slide carousel-fade" data-ride="carousel">
-                <div class="carousel-inner" role="listbox">
-                    <div class="carousel-item active" style="background: url('{{ asset('assets/user/img/evening-1.jpg') }}');">
-                        <div class="carousel-container">
-                            <div class="carousel-content">
-                                <h2 class="animate__animated animate__fadeInDown">
-                                    <span>Sistem Informasi</span>
-                                    <br>
-                                    Gereja Toraja Mamasa Klasis Makassar
-                                </h2>
-                                {% block header %}{% endblock %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <section class="header">
+        <div class="child">
+            <h1 class="animate__animated animate__fadeInDown">
+                Sistem Informasi
+                <br>
+                Gereja Toraja Mamasa Jemaat Sika
+            </h1>
         </div>
     </section>
 

@@ -32,10 +32,21 @@ class GerejaController extends AbstractController
     {
         $data = [
             'halaman' => 'Gereja',
-            'gereja'  => $this->mng->getRepository(TbGereja::class)->getAll(),
         ];
 
         return $this->render('superadmin/gereja/view.html.twig', $data);
+    }
+
+    /**
+     * @Route("/superadmin/gereja/get_data", name="superadmin_gereja_get_data")
+     */
+    // fungsi untuk get data all
+    public function get_data()
+    {
+        $get  = $this->mng->getRepository(TbGereja::class)->getAll();
+        $data = ['data' => $get];
+
+        return new JsonResponse($data);
     }
 
     /**

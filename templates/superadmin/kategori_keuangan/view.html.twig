@@ -19,9 +19,9 @@
 
 {# begin:: body #}
 <div class="container-fluid">
-    {# begin:: form #}
     <div class="row">
-        <div class="col-12">
+        <div class="col-6">
+            {# begin:: form #}
             <div class="card">
                 <div class="card-body">
                     <h3 class="card-title">Form</h3>
@@ -32,9 +32,10 @@
                         <input type="hidden" id="inpidkeuangan">
                         {# end:: token and id #}
 
-                        <div class="form-group">                            
+                        <div class="form-group">
                             <h4 class="card-title">Nama Keuangan *</h4>
-                            <input type="text" class="form-control form-control-sm" name="inpnama" id="inpnama" placeholder="Masukkan Kategori" />
+                            <input type="text" class="form-control form-control-sm" name="inpnama" id="inpnama"
+                                placeholder="Masukkan Kategori" />
                             <div id="error"></div>
                         </div>
                         <button type="submit" id="add" class="btn btn-outline-primary btn-sm btn-rounded">
@@ -43,48 +44,23 @@
                     </form>
                 </div>
             </div>
+            {# end:: form #}
         </div>
-    </div>
-    {# end:: form #}
-    {# begin:: tabel #}
-    <div class="row">
-        <div class="col-12">
+        <div class="col-6">
+            {# begin:: tabel #}
             <div class="card">
                 <div class="card-body">
                     <h3 class="card-title">Tabel</h3>
                     <hr>
                     <div class="table-responsive">
                         <table id="tabel-keuangan" class="table table-striped table-bordered display no-wrap" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>No.</th>
-                                    <th>Aksi</th>
-                                    <th>Nama</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for rows in keuangan %}
-                                <tr>
-                                    <td>{{ loop.index }}</td>
-                                    <td>
-                                        <button class="btn btn-outline-danger btn-sm btn-rounded" id="upd" data-id="{{ rows.id_keuangan }}">
-                                            <i class="fas fa-edit"></i>&nbsp;Ubah
-                                        </button>
-                                        <button class="btn btn-outline-primary btn-sm btn-rounded" id="del" data-id="{{ rows.id_keuangan }}">
-                                            <i class="fas fa-trash"></i>&nbsp;Hapus
-                                        </button>
-                                    </td>
-                                    <td>{{ rows.nama }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+            {# end:: tabel #}
         </div>
     </div>
-    {# end:: tabel #}
 </div>
 {# end:: body #}
 {% endblock %}
@@ -95,15 +71,49 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
 
 <script>
+    let dataTable = null;
+
     // untuk datatable
-    var untukDataTabel = function() {
-        $('#tabel-keuangan').DataTable();
+    var untukDataTabel = function () {
+        dataTable = $('#tabel-keuangan').DataTable({
+            responsive: true,
+            processing: true,
+            lengthMenu: [5, 10, 25, 50],
+            pageLength: 10,
+            ajax: '/superadmin/keuangan/get_data',
+            columns: [{
+                    title: 'No.',
+                    data: null,
+                    className: 'text-center',
+                    render: function (data, type, full, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                {
+                    title: 'Aksi',
+                    className: 'text-center',
+                    orderable: false,
+                    searchable: false,
+                    render: function (data, type, full, meta) {
+                        return `
+                            <button type="button" id="upd" data-id="` + full.id_keuangan + `" class="btn btn-outline-primary btn-sm btn-rounded"><i class="fas fa-edit"></i>&nbsp;Ubah</button>&nbsp;
+                            <button type="button" id="del" data-id="` + full.id_keuangan + `" class="btn btn-outline-danger btn-sm btn-rounded"><i class="fas fa-trash"></i>&nbsp;Hapus</button>
+                        `;
+                    },
+                },
+                {
+                    title: 'Nama',
+                    data: 'nama',
+                    className: 'text-center',
+                },
+            ],
+        });
     }();
 
     // untuk tambah data
-    var untukTambahData = function() {
+    var untukTambahData = function () {
         var parsleyConfig = {
-            errorsContainer: function(parsleyField) {
+            errorsContainer: function (parsleyField) {
                 var $err = parsleyField.$element.siblings('#error');
                 return $err;
             }
@@ -111,7 +121,7 @@
 
         $('#form-add').parsley(parsleyConfig);
 
-        $('#form-add').submit(function(e) {
+        $('#form-add').submit(function (e) {
             e.preventDefault();
 
             $('#inpnama').attr('required', 'required');
@@ -124,18 +134,17 @@
                     contentType: false,
                     processData: false,
                     dataType: 'json',
-                    beforeSend: function() {
+                    beforeSend: function () {
                         $('#add').attr('disabled', 'disabled');
                         $('#add').html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
                     },
-                    success: function(response) {
+                    success: function (response) {
                         swal({
                             title: response.title,
                             text: response.text,
                             icon: response.type,
                             button: response.button,
-                        })
-                        .then((value) => {
+                        }).then((value) => {
                             location.reload();
                         });
                     }
@@ -145,8 +154,8 @@
     }();
 
     // untuk get id
-    var untukGetIdData = function() {
-        $(document).on('click', '#upd', function() {
+    var untukGetIdData = function () {
+        $(document).on('click', '#upd', function () {
             var ini = $(this);
 
             $.ajax({
@@ -156,11 +165,11 @@
                 data: {
                     id: ini.data('id')
                 },
-                beforeSend: function() {
+                beforeSend: function () {
                     ini.attr('disabled', 'disabled');
                     ini.html('<i class="fas fa-spinner"></i>&nbsp;Menunggu');
                 },
-                success: function(data) {
+                success: function (data) {
                     $('form').attr('action', 'keuangan/upd');
                     $('form').attr('id', 'form-upd');
                     $('#inpidkeuangan').attr('name', 'inpidkeuangan');
@@ -175,9 +184,9 @@
     }();
 
     // untuk ubah data
-    var untukUbahData = function() {
+    var untukUbahData = function () {
         var parsleyConfig = {
-            errorsContainer: function(parsleyField) {
+            errorsContainer: function (parsleyField) {
                 var $err = parsleyField.$element.siblings('#error');
                 return $err;
             }
@@ -208,8 +217,7 @@
                             text: response.text,
                             icon: response.type,
                             button: response.button,
-                        })
-                        .then((value) => {
+                        }).then((value) => {
                             location.reload();
                         });
                     }
@@ -218,9 +226,9 @@
         });
     }();
 
-     // untuk hapus data
-    var untukHapusData = function() {
-        $(document).on('click', '#del', function() {
+    // untuk hapus data
+    var untukHapusData = function () {
+        $(document).on('click', '#del', function () {
             var ini = $(this);
 
             swal({
@@ -229,8 +237,7 @@
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
-            })
-            .then((del) => {
+            }).then((del) => {
                 if (del) {
                     $.ajax({
                         type: "post",
@@ -249,9 +256,8 @@
                                 text: response.text,
                                 icon: response.type,
                                 button: response.button,
-                            })
-                            .then((value) => {
-                                location.reload();
+                            }).then((value) => {
+                                dataTable.ajax.reload();
                             });
                         }
                     });

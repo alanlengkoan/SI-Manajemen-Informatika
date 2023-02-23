@@ -42,7 +42,7 @@ class GerejaController extends AbstractController
 
         return $this->render('gereja.html.twig', $data);
     }
-    
+
     /**
      * @Route("/gereja/{id}", name="gereja_detail")
      */
@@ -71,7 +71,7 @@ class GerejaController extends AbstractController
         $tanggal_awal_sesudah  = date('Y-m-d');
         $tanggal_akhir_sesudah = date('Y-m-d', strtotime('+7 days'));
 
-        $tanggal_awal_sebelum  = date('Y-m-d',strtotime('-7 days'));
+        $tanggal_awal_sebelum  = date('Y-m-d', strtotime('-7 days'));
         $tanggal_akhir_sebelum = date('Y-m-d');
 
         $jenis_ibadah = $this->mng->getRepository(TbJadwal::class)->getAll();
@@ -95,7 +95,7 @@ class GerejaController extends AbstractController
         // untuk membuat pdf
         $options = new Options();
         $options->set('isRemoteEnabled', TRUE);
-        
+
         $dompdf = new Dompdf($options);
         $html = $this->render('warta.html.twig', $data)->getContent();
         $dompdf->loadHtml($html);

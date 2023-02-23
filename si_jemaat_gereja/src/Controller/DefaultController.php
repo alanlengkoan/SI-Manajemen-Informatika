@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\TbGereja;
 use App\Entity\TbInformasi;
+use App\Entity\TbJemaat;
 use App\Entity\User;
 use App\Service\MyfunctionHelper;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,17 +21,22 @@ class DefaultController extends AbstractController
         $this->mng   = $mng;
         $this->myfun = $myfun;
     }
-    
+
     /**
      * @Route("/home", name="home")
      */
     public function index()
     {
+        $tanggal_awal_sesudah  = date('Y-m-d');
+        $tanggal_akhir_sesudah = date('Y-m-d', strtotime('+7 days'));
+        $id                    = 1;
+
         $data = [
-            'halaman' => 'Home',
-            'klasis'  => $this->mng->getRepository(User::class)->getDetail('1'),
-            'gereja'  => $this->mng->getRepository(TbGereja::class)->getAll(),
-            'galeri'  => $this->mng->getRepository(TbInformasi::class)->getGaleri()
+            'halaman'     => 'Home',
+            'klasis'      => $this->mng->getRepository(User::class)->getDetail('1'),
+            'gereja'      => $this->mng->getRepository(TbGereja::class)->getAll(),
+            'galeri'      => $this->mng->getRepository(TbInformasi::class)->getGaleri(),
+            'ulang_tahun' => $this->mng->getRepository(TbJemaat::class)->getDetailDate($id, $tanggal_awal_sesudah, $tanggal_akhir_sesudah),
         ];
 
         return $this->render('index.html.twig', $data);

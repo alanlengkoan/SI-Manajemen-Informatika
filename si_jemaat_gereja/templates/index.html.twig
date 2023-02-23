@@ -13,16 +13,18 @@
             </div>
             <div class="owl-carousel events-carousel">
                 {% for rows in gereja %}
-                    <div class="row event-item">
-                        <div class="col-lg-6">
-                            {% set fotoAkun = 'uploads/akun/'~rows.foto %}
-                            <img src="{{ (rows.foto != null) ? asset(fotoAkun) : "https://www.gambarunik.id/wp-content/uploads/2019/06/Berbagai-Gambar-Foto-Profil-Kosong-Lucu-Untuk-Status.jpg" }}" class="img-fluid" alt="Profil" />
-                        </div>
-                        <div class="col-lg-6 pt-4 pt-lg-0 content">
-                            <h2>{{ rows.nama }}</h2>
-                            <p>{{ rows.tentang[:700]|raw }} <a href="/gereja/{{ rows.id_gereja }}" type="button">Selengkapnya . . .</a></p>
-                        </div>
+                <div class="row event-item">
+                    <div class="col-lg-6">
+                        {% set fotoAkun = 'uploads/akun/'~rows.foto %}
+                        <img src="{{ (rows.foto != null) ? asset(fotoAkun) : "https://www.gambarunik.id/wp-content/uploads/2019/06/Berbagai-Gambar-Foto-Profil-Kosong-Lucu-Untuk-Status.jpg" }}"
+                            class="img-fluid" alt="Profil" />
                     </div>
+                    <div class="col-lg-6 pt-4 pt-lg-0 content">
+                        <h2>{{ rows.nama }}</h2>
+                        <p>{{ rows.tentang[:700]|raw }} <a href="/gereja/{{ rows.id_gereja }}"
+                                type="button">Selengkapnya . . .</a></p>
+                    </div>
+                </div>
                 {% endfor %}
             </div>
         </div>
@@ -50,6 +52,30 @@
         </div>
     </section>
     {# end:: galery #}
+    {# begin:: happy birthday #}
+    <section id="gallery" class="gallery mb-5">
+        <div class="container">
+            <div class="section-title">
+                <h1>Happy Birthday</h1>
+            </div>
+            <div class="row no-gutters text-center">
+                {% if ulang_tahun|length != 0 %}
+                {% for rows in ulang_tahun %}
+                <div class="col-lg-3 col-md-4">
+                    <h2>{{ rows.nama }}</h2>
+                    <h3>{{ rows.tgl_lahir|date('d-m-Y') }}</h3>
+                    <h4>{{ rows.tgl_lahir|date('Y-m-d')|umur }}</h4>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="col-lg-12 col-md-12">
+                    <h2>Tidak ada yang ulang tahun dalam minggu ini</h2>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    {# end:: happy birthday #}
 </main>
 {# end:: body #}
 {% endblock %}

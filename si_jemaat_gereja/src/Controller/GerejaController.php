@@ -95,9 +95,17 @@ class GerejaController extends AbstractController
         // untuk membuat pdf
         $options = new Options();
         $options->set('isRemoteEnabled', TRUE);
+        $contxt = stream_context_create([
+            'ssl' => [
+                'verify_peer'       => FALSE,
+                'verify_peer_name'  => FALSE,
+                'allow_self_signed' => TRUE
+            ]
+        ]);
 
         $dompdf = new Dompdf($options);
-        $html = $this->render('warta.html.twig', $data)->getContent();
+        $html   = $this->render('warta.html.twig', $data)->getContent();
+        $dompdf->setHttpContext($contxt);
         $dompdf->loadHtml($html);
         $dompdf->setPaper('legal', 'landscape');
         $dompdf->render();

@@ -35,7 +35,7 @@
             <table align="center">
                 <tr>
                     <td>
-                        <img src="{{ app.request.uriForPath('/uploads/akun/'~detail.foto) }}" width="50" heigth="50" />
+                        <img src="{{ (detail.foto ? app.request.uriForPath('/uploads/akun/'~detail.foto) : '//placehold.co/150') }}" width="50" heigth="50" />
                     </td>
                     <td align="center">
                         <h3 style="margin: 0;">Gereja Toraja Mamasa</h3>
@@ -47,7 +47,7 @@
             </table>
             <h2>Warta Jemaat</h2>
             <h2>{{ tanggal|date('d-m-Y') }}</h2>
-            <img style="margin-top: 40px; margin-bottom: 10px;" src="https://bengkuluekspress.com/wp-content/uploads/2018/12/gereja.jpg" width="400" height="400">
+            <img style="margin-top: 40px; margin-bottom: 10px;" src="{{ app.request.getSchemeAndHttpHost() }}/assets/user/img/cover_warta.png" width="400" height="400">
             <table align="center">
                 <tr>
                     <td align="center">

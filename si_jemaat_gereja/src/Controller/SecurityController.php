@@ -24,7 +24,7 @@ class SecurityController extends AbstractController
         $this->mng   = $mng;
         $this->myfun = $myfun;
     }
-    
+
     /**
      * @Route("/login", name="app_login")
      */
